@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "flask",
+  "installCommand": "pip install -r requirements.txt",
+  "buildCommand": null,
+  "functions": {
+    "app.py": {
+      "maxDuration": 30,
+      "excludeFiles": "{node_modules/**,__pycache__/**,**/*.pyc,.git/**,events_connect.db}"
+    }
+  }
+}

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscrire mon entreprise — Events Connect</title>
+    <meta name="description" content="Inscrivez votre entreprise sur Events Connect et recevez des demandes de devis directement sur WhatsApp.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold:#f5a623;--gold-l:#ffd166;--gold-d:#d4880a;
+            --emerald:#10e8a0;--purple:#7c3aed;--purple-l:#a855f7;
+            --bg:#060a10;--card:rgba(255,255,255,.04);
+            --border:rgba(255,255,255,.08);--border-g:rgba(245,166,35,.3);
+            --t1:#f0f4ff;--t2:#8a96b0;--t3:#4a5568;
+            --r-card:20px;--r-btn:12px;--tr:all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;min-height:100vh}
+        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0a0f18}
+        ::-webkit-scrollbar-thumb{background:rgba(245,166,35,.3);border-radius:3px}
+
+        .bg-orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+        .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.1;animation:drift 20s ease-in-out infinite alternate}
+        .orb-1{width:500px;height:500px;background:var(--purple);top:-150px;right:-100px}
+        .orb-2{width:400px;height:400px;background:var(--gold);bottom:-100px;left:-100px;animation-delay:-10s}
+        @keyframes drift{0%{transform:translate(0,0)}100%{transform:translate(25px,18px)}}
+
+        /* Navbar */
+        .nav{position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);background:rgba(6,10,16,.82);border-bottom:1px solid var(--border);padding:14px 0}
+        .nav-in{max-width:800px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+        .nav-logo{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none}
+        .nav-back{display:flex;align-items:center;gap:7px;color:var(--t2);text-decoration:none;font-size:.9rem;font-weight:500;transition:var(--tr);padding:7px 14px;border:1px solid var(--border);border-radius:var(--r-btn)}
+        .nav-back:hover{color:var(--gold);border-color:var(--border-g)}
+
+        /* Layout */
+        .wrap{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:48px 24px 80px}
+
+        /* Header */
+        .page-hdr{text-align:center;margin-bottom:40px;animation:fadeUp .6s ease both}
+        .page-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.25);color:var(--purple-l);padding:7px 18px;border-radius:50px;font-size:.82rem;font-weight:600;margin-bottom:18px}
+        .page-hdr h1{font-size:clamp(2rem,4vw,3rem);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:10px}
+        .grad{background:linear-gradient(135deg,var(--purple-l),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .page-hdr p{font-size:1rem;color:var(--t2)}
+
+        /* Error */
+        .error-box{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:14px 18px;color:#f87171;font-size:.9rem;margin-bottom:22px;display:flex;align-items:center;gap:8px}
+
+        /* Form card */
+        .form-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-card);padding:36px;animation:fadeUp .6s .1s ease both;transition:var(--tr)}
+        .form-card:hover{border-color:var(--border-g)}
+
+        .section-label{font-size:.72rem;font-weight:700;color:var(--purple-l);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px}
+        .form-grid.one{grid-template-columns:1fr}
+        @media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+
+        .fg{display:flex;flex-direction:column}
+        .fg label{font-size:.75rem;font-weight:600;color:var(--t2);margin-bottom:7px;text-transform:uppercase;letter-spacing:.7px}
+        .fg label .req{color:var(--gold);margin-left:2px}
+        .fg input,.fg select,.fg textarea{padding:13px 15px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:var(--r-btn);color:var(--t1);font-size:.93rem;font-family:'Outfit',sans-serif;transition:var(--tr);outline:none;resize:none}
+        .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold);background:rgba(245,166,35,.05);box-shadow:0 0 0 3px rgba(245,166,35,.1)}
+        .fg select option{background:#111827}
+        .fg input::placeholder,.fg textarea::placeholder{color:var(--t3)}
+        .fg .hint{font-size:.75rem;color:var(--t3);margin-top:5px}
+
+        /* Category cards */
+        .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}
+        @media(max-width:500px){.cat-grid{grid-template-columns:repeat(2,1fr)}}
+        .cat-radio{display:none}
+        .cat-label{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:var(--tr);text-align:center;font-size:.8rem;font-weight:600;color:var(--t2)}
+        .cat-label .em{font-size:1.6rem}
+        .cat-radio:checked + .cat-label{background:rgba(245,166,35,.1);border-color:var(--gold);color:var(--gold)}
+        .cat-label:hover{border-color:var(--border-g);color:var(--gold-l)}
+
+        /* Image preview */
+        .img-preview{width:100%;height:140px;border-radius:12px;overflow:hidden;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:.85rem;margin-top:8px;transition:var(--tr)}
+        .img-preview img{width:100%;height:100%;object-fit:cover}
+        .img-preview:has(img){border-style:solid;border-color:var(--border-g)}
+
+        /* Submit */
+        .submit-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-top:22px;border-top:1px solid var(--border)}
+        .submit-note{font-size:.8rem;color:var(--t3);max-width:280px;line-height:1.5}
+        .btn-submit{background:linear-gradient(135deg,var(--purple),var(--purple-l));color:#fff;border:none;padding:15px 36px;border-radius:var(--r-btn);font-weight:700;font-size:1rem;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--tr);box-shadow:0 4px 20px rgba(124,58,237,.35)}
+        .btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,.5)}
+
+        /* Perks */
+        .perks-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:28px;animation:fadeUp .6s .2s ease both}
+        .perk{display:flex;align-items:center;gap:7px;font-size:.82rem;color:var(--t2);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;flex:1;min-width:150px}
+        .dot{width:7px;height:7px;border-radius:50%;background:var(--emerald);flex-shrink:0}
+
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    </style>
+</head>
+<body>
+<div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div><div class="orb orb-2"></div>
+</div>
+
+<nav class="nav">
+    <div class="nav-in">
+        <a href="/" class="nav-logo">⚡ Events Connect</a>
+        <a href="/" class="nav-back">← Retour à l'annuaire</a>
+    </div>
+</nav>
+
+<main class="wrap">
+
+    <div class="page-hdr">
+        <div class="page-pill">🚀 Rejoindre l'annuaire</div>
+        <h1>Inscrivez votre<br><span class="grad">entreprise</span></h1>
+        <p>Créez votre profil gratuitement et recevez des demandes de devis directement sur WhatsApp.</p>
+    </div>
+
+    {% if error %}
+    <div class="error-box">⚠️ {{ error }}</div>
+    {% endif %}
+
+    <form class="form-card" action="/inscription" method="POST" id="inscription-form" novalidate>
+
+        <!-- Catégorie -->
+        <div class="section-label">🎭 Votre métier <span class="req">*</span></div>
+        <div class="cat-grid">
+            {% for key, cat in categories.items() %}
+            <div>
+                <input class="cat-radio" type="radio" name="category" id="cat-{{ key }}" value="{{ key }}" required>
+                <label class="cat-label" for="cat-{{ key }}">
+                    <span class="em">{{ cat.emoji }}</span>
+                    {{ cat.label }}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Informations de base -->
+        <div class="section-label">🏢 Informations de votre entreprise</div>
+        <div class="form-grid">
+            <div class="fg">
+                <label for="name-in">Nom de l'entreprise <span class="req">*</span></label>
+                <input type="text" id="name-in" name="name" placeholder="Ex: Studio Lumière" required maxlength="100">
+            </div>
+            <div class="fg">
+                <label for="phone-in">Numéro WhatsApp <span class="req">*</span></label>
+                <input type="tel" id="phone-in" name="phone" placeholder="Ex: 221771234567" required maxlength="20">
+                <span class="hint">Format international sans le + (ex: 221771234567)</span>
+            </div>
+            <div class="fg">
+                <label for="city-in">Ville <span class="req">*</span></label>
+                <input type="text" id="city-in" name="city" placeholder="Ex: Dakar, Thiès, Saly..." required maxlength="60">
+            </div>
+            <div class="fg">
+                <label for="location-in">Quartier / Zone <span class="req">*</span></label>
+                <input type="text" id="location-in" name="location" placeholder="Ex: Mermoz, Almadies..." required maxlength="100">
+            </div>
+        </div>
+
+        <!-- Tarifs -->
+        <div class="section-label">💰 Tarifs</div>
+        <div class="form-grid">
+            <div class="fg">
+                <label for="price-from-in">Prix de départ (FCFA)</label>
+                <input type="number" id="price-from-in" name="price_from" placeholder="Ex: 75000" min="0">
+            </div>
+            <div class="fg">
+                <label for="price-label-in">Libellé du tarif</label>
+                <input type="text" id="price-label-in" name="price_label" placeholder="Ex: À partir de 75 000 FCFA / événement" maxlength="120">
+                <span class="hint">Laissez vide pour générer automatiquement</span>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="section-label">📝 Description & Spécialités</div>
+        <div class="form-grid one">
+            <div class="fg">
+                <label for="specialties-in">Spécialités (séparées par des virgules)</label>
+                <input type="text" id="specialties-in" name="specialties" placeholder="Ex: Mariages, Baptêmes, Soirées d'entreprise" maxlength="200">
+            </div>
+            <div class="fg">
+                <label for="desc-in">Description de votre activité</label>
+                <textarea id="desc-in" name="description" rows="4" placeholder="Décrivez votre expérience, vos services, ce qui vous rend unique..." maxlength="1000"></textarea>
+            </div>
+        </div>
+
+        <!-- Image -->
+        <div class="section-label">🖼️ Photo de couverture</div>
+        <div class="form-grid one">
+            <div class="fg">
+                <label for="image-in">URL de votre photo (facultatif)</label>
+                <input type="url" id="image-in" name="image_url" placeholder="https://..." maxlength="500" oninput="previewImg(this.value)">
+                <span class="hint">Lien direct vers une photo JPG/PNG (ex: depuis Google Drive ou Unsplash)</span>
+                <div class="img-preview" id="img-preview">📷 Aperçu de l'image</div>
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="submit-row">
+            <p class="submit-note">En vous inscrivant, votre profil sera visible par tous les visiteurs. Vous pouvez être contacté directement par les clients.</p>
+            <button type="submit" class="btn-submit" id="submit-inscription-btn">
+                Créer mon profil →
+            </button>
+        </div>
+
+    </form>
+
+    <div class="perks-row">
+        <div class="perk"><div class="dot"></div>Inscription 100% gratuite</div>
+        <div class="perk"><div class="dot"></div>Profil visible immédiatement</div>
+        <div class="perk"><div class="dot"></div>Avis clients visibles</div>
+        <div class="perk"><div class="dot"></div>Contact WhatsApp direct</div>
+    </div>
+
+</main>
+
+<script>
+function previewImg(url) {
+    const box = document.getElementById('img-preview');
+    if (!url) { box.innerHTML = '📷 Aperçu de l\'image'; return; }
+    const img = new Image();
+    img.onload = () => { box.innerHTML = ''; box.appendChild(img); };
+    img.onerror = () => { box.innerHTML = '❌ URL invalide'; };
+    img.src = url;
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover';
+}
+</script>
+</body>
+</html>
