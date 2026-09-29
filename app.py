@@ -7,7 +7,9 @@ from datetime import datetime
 app = Flask(__name__)
 
 # On Vercel the filesystem is read-only except /tmp (data is ephemeral).
-if os.environ.get('VERCEL'):
+if os.environ.get('DATABASE_PATH'):
+    DATABASE = os.environ.get('DATABASE_PATH')
+elif os.environ.get('VERCEL'):
     DATABASE = '/tmp/events_connect.db'
 else:
     DATABASE = os.path.join(os.path.dirname(__file__), 'events_connect.db')
@@ -291,4 +293,5 @@ def inscription():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
