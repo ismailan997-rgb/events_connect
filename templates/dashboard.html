@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord — {{ provider.name }}</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold:#f5a623;--gold-l:#ffd166;--gold-d:#d4880a;
+            --emerald:#10e8a0;--purple:#7c3aed;--purple-l:#a855f7;
+            --bg:#060a10;--card:rgba(255,255,255,.04);--card-h:rgba(255,255,255,.07);
+            --border:rgba(255,255,255,.08);--border-g:rgba(245,166,35,.3);
+            --t1:#f0f4ff;--t2:#8a96b0;--t3:#4a5568;
+            --r-card:20px;--r-btn:12px;--tr:all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        *{box-sizing:border-box} body{margin:0;font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);line-height:1.6}
+        a{text-decoration:none;color:inherit}
+        .nav{position:sticky;top:0;background:rgba(6,10,16,.82);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 0;z-index:50}
+        .nav-in{max-width:1000px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}
+        .nav-logo{font-size:1.25rem;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .nav-btn{padding:8px 14px;border-radius:12px;border:1px solid var(--border);color:var(--t2);font-size:.9rem}
+        .wrap{max-width:1000px;margin:0 auto;padding:40px 24px 80px}
+        .hero{display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:var(--r-card);padding:28px;box-shadow:0 16px 40px rgba(0,0,0,.25)}
+        .avatar{width:180px;height:180px;border-radius:18px;border:1px solid var(--border-g);overflow:hidden;background:#0d1420}
+        .avatar img{width:100%;height:100%;object-fit:cover}
+        .hero h1{font-size:clamp(1.8rem,4vw,2.7rem);margin:0 0 10px;letter-spacing:-1px}
+        .meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}
+        .pill{padding:6px 12px;border-radius:50px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--gold-l);font-size:.75rem;font-weight:700}
+        .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;margin-top:28px}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-card);padding:26px}
+        .card h2{margin:0 0 16px;font-size:1.1rem;letter-spacing:-.3px}
+        .info-list{display:flex;flex-direction:column;gap:12px;color:var(--t2)}
+        .info-list strong{color:var(--t1)}
+        .danger-box{border:1px solid rgba(239,68,68,.35);background:rgba(239,68,68,.08);padding:18px;border-radius:14px;color:#fca5a5}
+        .danger-btn{margin-top:14px;display:inline-block;border:none;background:linear-gradient(135deg,#ef4444,#b91c1c);color:white;font-family:'Outfit',sans-serif;padding:12px 18px;border-radius:12px;font-weight:800;cursor:pointer}
+        .btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+        .primary{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#060a10;font-weight:800}
+        .secondary{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:12px;border:1px solid var(--border);color:var(--t2);font-weight:600}
+        @media (max-width:760px){ .hero{grid-template-columns:1fr; text-align:center;} .avatar{margin:0 auto;} .grid{grid-template-columns:1fr;} }
+    </style>
+</head>
+<body>
+<nav class="nav">
+    <div class="nav-in">
+        <a href="/" class="nav-logo">⚡ Events Connect</a>
+        <a href="/" class="nav-btn">Retour à l’annuaire</a>
+    </div>
+</nav>
+
+<main class="wrap">
+    <section class="hero">
+        <div class="avatar">
+            {% if provider.image_url %}
+            <img src="{{ provider.image_url }}" alt="{{ provider.name }}">
+            {% else %}
+            <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:3.5rem;">{{ provider.category_emoji }}</div>
+            {% endif %}
+        </div>
+        <div>
+            <div class="meta">
+                <span class="pill">{{ provider.category_emoji }} {{ provider.category_display }}</span>
+                {% if provider.verified %}<span class="pill">✓ Vérifié</span>{% endif %}
+            </div>
+            <h1>{{ provider.name }}</h1>
+            <p style="color:var(--t2);margin:0;">Gérez facilement votre annonce et supprimez-la en un clic si besoin.</p>
+            <div class="btn-row">
+                <a href="{{ provider.public_url }}" class="primary" target="_blank" rel="noopener">Voir l’annonce publique</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="grid">
+        <section class="card">
+            <h2>Informations de votre annonce</h2>
+            <div class="info-list">
+                <div><strong>Ville :</strong> {{ provider.city }}</div>
+                <div><strong>Zone :</strong> {{ provider.location }}</div>
+                <div><strong>WhatsApp :</strong> +{{ provider.phone }}</div>
+                <div><strong>Tarif :</strong> {{ provider.price_label }}</div>
+                <div><strong>Spécialités :</strong> {{ provider.specialties or 'Non renseigné' }}</div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Supprimer l’annonce</h2>
+            <div class="danger-box">
+                Cette action est définitive. Votre profil sera retiré de l’annuaire et les demandes sur WhatsApp ne seront plus visibles.
+                <form method="POST" action="/dashboard/{{ provider.dashboard_token }}/delete" onsubmit="return confirm('Voulez-vous vraiment supprimer votre annonce ?')">
+                    <button type="submit" name="confirm" value="SUPPRIMER" class="danger-btn">Supprimer mon annonce</button>
+                </form>
+            </div>
+        </section>
+    </div>
+</main>
+</body>
+</html>

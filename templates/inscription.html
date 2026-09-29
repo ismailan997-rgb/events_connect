@@ -110,7 +110,10 @@
 <nav class="nav">
     <div class="nav-in">
         <a href="/" class="nav-logo">⚡ Events Connect</a>
-        <a href="/" class="nav-back">← Retour à l'annuaire</a>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <a href="/dashboard-access" class="nav-back">Se connecter</a>
+            <a href="/" class="nav-back">← Retour à l'annuaire</a>
+        </div>
     </div>
 </nav>
 
@@ -126,7 +129,7 @@
     <div class="error-box">⚠️ {{ error }}</div>
     {% endif %}
 
-    <form class="form-card" action="/inscription" method="POST" id="inscription-form">
+    <form class="form-card" action="/inscription" method="POST" id="inscription-form" enctype="multipart/form-data">
 
         <!-- Métier -->
         <div class="section-label">🎭 Votre métier principal <span class="req">*</span></div>
@@ -166,6 +169,15 @@
                 <label for="phone-in">Numéro WhatsApp Pro <span class="req">*</span></label>
                 <input type="tel" id="phone-in" name="phone" placeholder="Ex: 221771234567" required maxlength="20">
                 <span class="hint">Format international sans le + (ex: 221771234567)</span>
+            </div>
+            <div class="fg">
+                <label for="password-in">Mot de passe du dashboard <span class="req">*</span></label>
+                <input type="password" id="password-in" name="password" placeholder="Choisissez un mot de passe" required maxlength="50">
+                <span class="hint">Utilisez-le avec votre numéro WhatsApp pour ouvrir le dashboard</span>
+            </div>
+            <div class="fg">
+                <label for="confirm-password-in">Confirmer le mot de passe <span class="req">*</span></label>
+                <input type="password" id="confirm-password-in" name="confirm_password" placeholder="Réécrivez le mot de passe" required maxlength="50">
             </div>
             <div class="fg">
                 <label for="city-in">Ville principale <span class="req">*</span></label>
@@ -209,13 +221,13 @@
         <div class="form-grid">
             <div class="fg">
                 <label for="image-in">Photo de profil / Couverture</label>
-                <input type="url" id="image-in" name="image_url" placeholder="https://..." maxlength="500" oninput="previewImg(this.value)">
-                <span class="hint">Lien direct vers votre photo JPG/PNG</span>
+                <input type="file" id="image-in" name="image" accept="image/*" onchange="previewFileInput(this, 'img-preview')">
+                <span class="hint">Téléchargez une image JPG/PNG depuis votre ordinateur</span>
                 <div class="img-preview" id="img-preview">📷 Aperçu de la photo</div>
             </div>
             <div class="fg">
-                <label for="p-url-in">Photo d'une réalisation passée (Portfolio)</label>
-                <input type="url" id="p-url-in" name="portfolio_url" placeholder="https://..." maxlength="500">
+                <label for="p-file-in">Photo d'une réalisation passée (Portfolio)</label>
+                <input type="file" id="p-file-in" name="portfolio_image" accept="image/*">
                 <label for="p-title-in" style="margin-top:8px">Titre de la réalisation</label>
                 <input type="text" id="p-title-in" name="portfolio_title" placeholder="Ex: Mariage VIP aux Almadies" maxlength="100">
             </div>
@@ -241,14 +253,23 @@
 </main>
 
 <script>
-function previewImg(url) {
-    const box = document.getElementById('img-preview');
-    if (!url) { box.innerHTML = '📷 Aperçu de la photo'; return; }
-    const img = new Image();
-    img.onload = () => { box.innerHTML = ''; box.appendChild(img); };
-    img.onerror = () => { box.innerHTML = '❌ URL invalide'; };
-    img.src = url;
-    img.style.cssText = 'width:100%;height:100%;object-fit:cover';
+function previewFileInput(input, previewId) {
+    const box = document.getElementById(previewId);
+    const file = input.files && input.files[0];
+    if (!file) {
+        box.innerHTML = '📷 Aperçu de la photo';
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        box.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = event.target.result;
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover';
+        box.appendChild(img);
+    };
+    reader.readAsDataURL(file);
 }
 </script>
 </body>

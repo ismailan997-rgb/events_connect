@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accès prestataire — Events Connect</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold:#f5a623; --gold-l:#ffd166; --bg:#060a10; --card:rgba(255,255,255,.04); --border:rgba(255,255,255,.08); --t1:#f0f4ff; --t2:#8a96b0; }
+        *{box-sizing:border-box} body{margin:0;font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+        .card{width:min(520px,100%);background:var(--card);border:1px solid var(--border);border-radius:24px;padding:32px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+        .pill{display:inline-block;padding:6px 12px;border-radius:50px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.3);color:var(--gold-l);font-size:.75rem;font-weight:700;margin-bottom:15px}
+        h1{margin:0 0 10px;font-size:clamp(1.8rem,4vw,2.4rem);letter-spacing:-1px}
+        p{color:var(--t2);margin:0 0 24px}
+        form{display:flex;flex-direction:column;gap:14px}
+        label{font-size:.75rem;color:var(--t2);text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+        input{padding:13px 14px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:#fff;font-size:1rem;outline:none}
+        input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,166,35,.15)}
+        .btn{padding:14px 18px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#060a10;font-size:1rem;font-weight:900;cursor:pointer}
+        .link{margin-top:18px;display:inline-block;color:var(--gold-l);font-size:.9rem}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="pill">🔐 Espace prestataire</div>
+        <h1>Accéder à mon dashboard</h1>
+        <p>Collez votre code d’accès fourni après votre inscription pour gérer votre annonce.</p>
+
+        {% if error %}
+        <div style="margin-bottom:18px;padding:12px 14px;border-radius:12px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#fca5a5;font-size:.9rem;">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="/dashboard-access">
+            <label for="phone">Numéro WhatsApp</label>
+            <input id="phone" name="phone" type="tel" placeholder="Ex: 221771234567" required>
+
+            <label for="password">Mot de passe</label>
+            <input id="password" name="password" type="password" placeholder="Votre mot de passe" required>
+
+            <button class="btn" type="submit">Ouvrir mon tableau de bord</button>
+        </form>
+
+        <a class="link" href="/inscription">Je veux m’inscrire</a>
+    </div>
+</body>
+</html>

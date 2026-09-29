@@ -268,6 +268,9 @@
                 <button class="btn-wa-big" onclick="openWhatsAppModal()" id="contact-wa-btn">
                     💬 Demander un devis sur WhatsApp
                 </button>
+                {% if provider.dashboard_url %}
+                <a class="btn-share" href="{{ provider.dashboard_url }}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">🛠️ Gérer mon annonce</a>
+                {% endif %}
                 <button class="btn-share" onclick="share()" id="share-btn" title="Partager">🔗 Partager</button>
             </div>
         </div>
