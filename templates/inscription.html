@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscrire mon entreprise — Events Connect</title>
+    <link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name=Events+Connect&background=0f172a&color=f59e0b&size=200&bold=true&rounded=true">
     <meta name="description" content="Inscrivez votre entreprise sur Events Connect et recevez des demandes de devis directement sur WhatsApp.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,13 +32,13 @@
 
         /* Navbar */
         .nav{position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);background:rgba(6,10,16,.82);border-bottom:1px solid var(--border);padding:14px 0}
-        .nav-in{max-width:800px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+        .nav-in{max-width:850px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
         .nav-logo{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none}
         .nav-back{display:flex;align-items:center;gap:7px;color:var(--t2);text-decoration:none;font-size:.9rem;font-weight:500;transition:var(--tr);padding:7px 14px;border:1px solid var(--border);border-radius:var(--r-btn)}
         .nav-back:hover{color:var(--gold);border-color:var(--border-g)}
 
         /* Layout */
-        .wrap{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:48px 24px 80px}
+        .wrap{position:relative;z-index:1;max-width:850px;margin:0 auto;padding:48px 24px 80px}
 
         /* Header */
         .page-hdr{text-align:center;margin-bottom:40px;animation:fadeUp .6s ease both}
@@ -53,19 +54,17 @@
         .form-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-card);padding:36px;animation:fadeUp .6s .1s ease both;transition:var(--tr)}
         .form-card:hover{border-color:var(--border-g)}
 
-        .section-label{font-size:.72rem;font-weight:700;color:var(--purple-l);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+        .section-label{font-size:.78rem;font-weight:700;color:var(--gold-l);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
         .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px}
         .form-grid.one{grid-template-columns:1fr}
         @media(max-width:600px){.form-grid{grid-template-columns:1fr}}
 
-        .fg{display:flex;flex-direction:column}
-        .fg label{font-size:.75rem;font-weight:600;color:var(--t2);margin-bottom:7px;text-transform:uppercase;letter-spacing:.7px}
-        .fg label .req{color:var(--gold);margin-left:2px}
-        .fg input,.fg select,.fg textarea{padding:13px 15px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:var(--r-btn);color:var(--t1);font-size:.93rem;font-family:'Outfit',sans-serif;transition:var(--tr);outline:none;resize:none}
-        .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold);background:rgba(245,166,35,.05);box-shadow:0 0 0 3px rgba(245,166,35,.1)}
-        .fg select option{background:#111827}
-        .fg input::placeholder,.fg textarea::placeholder{color:var(--t3)}
-        .fg .hint{font-size:.75rem;color:var(--t3);margin-top:5px}
+        .fg{display:flex;flex-direction:column;gap:6px}
+        .fg label{font-size:.78rem;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.6px}
+        .fg label .req{color:var(--gold);margin-left:3px}
+        .fg input, .fg select, .fg textarea{background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--t1);padding:12px 14px;border-radius:var(--r-btn);font-family:inherit;font-size:.9rem;outline:none;transition:var(--tr)}
+        .fg input:focus, .fg select:focus, .fg textarea:focus{border-color:var(--gold);background:rgba(255,255,255,.08);box-shadow:0 0 0 3px rgba(245,166,35,.15)}
+        .hint{font-size:.72rem;color:var(--t3);margin-top:2px}
 
         /* Category cards */
         .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}
@@ -73,19 +72,26 @@
         .cat-radio{display:none}
         .cat-label{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:var(--tr);text-align:center;font-size:.8rem;font-weight:600;color:var(--t2)}
         .cat-label .em{font-size:1.6rem}
-        .cat-radio:checked + .cat-label{background:rgba(245,166,35,.1);border-color:var(--gold);color:var(--gold)}
+        .cat-radio:checked + .cat-label{background:rgba(245,166,35,.12);border-color:var(--gold);color:var(--gold-l)}
         .cat-label:hover{border-color:var(--border-g);color:var(--gold-l)}
+
+        /* Event checkboxes */
+        .events-checkbox-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:24px}
+        .ev-check-box{position:relative}
+        .ev-check-input{display:none}
+        .ev-check-label{display:flex;align-items:center;gap:8px;padding:12px 14px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;font-size:.85rem;font-weight:600;color:var(--t2);cursor:pointer;transition:var(--tr)}
+        .ev-check-input:checked + .ev-check-label{background:rgba(16,232,160,.12);border-color:var(--emerald);color:#fff}
+        .ev-check-label:hover{border-color:var(--border-g)}
 
         /* Image preview */
         .img-preview{width:100%;height:140px;border-radius:12px;overflow:hidden;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:.85rem;margin-top:8px;transition:var(--tr)}
         .img-preview img{width:100%;height:100%;object-fit:cover}
-        .img-preview:has(img){border-style:solid;border-color:var(--border-g)}
 
         /* Submit */
         .submit-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-top:22px;border-top:1px solid var(--border)}
-        .submit-note{font-size:.8rem;color:var(--t3);max-width:280px;line-height:1.5}
-        .btn-submit{background:linear-gradient(135deg,var(--purple),var(--purple-l));color:#fff;border:none;padding:15px 36px;border-radius:var(--r-btn);font-weight:700;font-size:1rem;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--tr);box-shadow:0 4px 20px rgba(124,58,237,.35)}
-        .btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,.5)}
+        .submit-note{font-size:.8rem;color:var(--t3);max-width:320px;line-height:1.5}
+        .btn-submit{background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#060a10;border:none;padding:15px 36px;border-radius:var(--r-btn);font-weight:800;font-size:1rem;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--tr);box-shadow:0 4px 20px rgba(245,166,35,.35)}
+        .btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(245,166,35,.5)}
 
         /* Perks */
         .perks-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:28px;animation:fadeUp .6s .2s ease both}
@@ -112,21 +118,21 @@
     <div class="page-hdr">
         <div class="page-pill">🚀 Rejoindre l'annuaire</div>
         <h1>Inscrivez votre<br><span class="grad">entreprise</span></h1>
-        <p>Créez votre profil gratuitement et recevez des demandes de devis directement sur WhatsApp.</p>
+        <p>Créez votre profil gratuitement et recevez des demandes de devis qualifiées directement sur votre WhatsApp.</p>
     </div>
 
     {% if error %}
     <div class="error-box">⚠️ {{ error }}</div>
     {% endif %}
 
-    <form class="form-card" action="/inscription" method="POST" id="inscription-form" novalidate>
+    <form class="form-card" action="/inscription" method="POST" id="inscription-form">
 
-        <!-- Catégorie -->
-        <div class="section-label">🎭 Votre métier <span class="req">*</span></div>
+        <!-- Métier -->
+        <div class="section-label">🎭 Votre métier principal <span class="req">*</span></div>
         <div class="cat-grid">
             {% for key, cat in categories.items() %}
             <div>
-                <input class="cat-radio" type="radio" name="category" id="cat-{{ key }}" value="{{ key }}" required>
+                <input class="cat-radio" type="radio" name="category" id="cat-{{ key }}" value="{{ key }}" required {% if loop.first %}checked{% endif %}>
                 <label class="cat-label" for="cat-{{ key }}">
                     <span class="em">{{ cat.emoji }}</span>
                     {{ cat.label }}
@@ -135,71 +141,90 @@
             {% endfor %}
         </div>
 
-        <!-- Informations de base -->
-        <div class="section-label">🏢 Informations de votre entreprise</div>
+        <!-- Types d'événements couverts -->
+        <div class="section-label">🎉 Événements que vous couvrez <span class="req">*</span></div>
+        <div class="events-checkbox-grid">
+            {% for key, ev in event_types.items() %}
+            <div class="ev-check-box">
+                <input type="checkbox" name="event_types" id="ev-{{ key }}" value="{{ key }}" class="ev-check-input" checked>
+                <label for="ev-{{ key }}" class="ev-check-label">
+                    <span>{{ ev.emoji }}</span> {{ ev.label }}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Informations de l'entreprise -->
+        <div class="section-label">🏢 Coordonnées & Localisation</div>
         <div class="form-grid">
             <div class="fg">
-                <label for="name-in">Nom de l'entreprise <span class="req">*</span></label>
-                <input type="text" id="name-in" name="name" placeholder="Ex: Studio Lumière" required maxlength="100">
+                <label for="name-in">Nom de l'entreprise / Studio <span class="req">*</span></label>
+                <input type="text" id="name-in" name="name" placeholder="Ex: Studio Vision Prestige" required maxlength="100">
             </div>
             <div class="fg">
-                <label for="phone-in">Numéro WhatsApp <span class="req">*</span></label>
+                <label for="phone-in">Numéro WhatsApp Pro <span class="req">*</span></label>
                 <input type="tel" id="phone-in" name="phone" placeholder="Ex: 221771234567" required maxlength="20">
                 <span class="hint">Format international sans le + (ex: 221771234567)</span>
             </div>
             <div class="fg">
-                <label for="city-in">Ville <span class="req">*</span></label>
+                <label for="city-in">Ville principale <span class="req">*</span></label>
                 <input type="text" id="city-in" name="city" placeholder="Ex: Dakar, Thiès, Saly..." required maxlength="60">
             </div>
             <div class="fg">
-                <label for="location-in">Quartier / Zone <span class="req">*</span></label>
-                <input type="text" id="location-in" name="location" placeholder="Ex: Mermoz, Almadies..." required maxlength="100">
+                <label for="location-in">Quartier / Zone d'intervention <span class="req">*</span></label>
+                <input type="text" id="location-in" name="location" placeholder="Ex: Almadies & région" required maxlength="100">
             </div>
         </div>
 
         <!-- Tarifs -->
-        <div class="section-label">💰 Tarifs</div>
+        <div class="section-label">💰 Tarifs indicatifs</div>
         <div class="form-grid">
             <div class="fg">
                 <label for="price-from-in">Prix de départ (FCFA)</label>
-                <input type="number" id="price-from-in" name="price_from" placeholder="Ex: 75000" min="0">
+                <input type="number" id="price-from-in" name="price_from" placeholder="Ex: 100000" min="0">
             </div>
             <div class="fg">
-                <label for="price-label-in">Libellé du tarif</label>
-                <input type="text" id="price-label-in" name="price_label" placeholder="Ex: À partir de 75 000 FCFA / événement" maxlength="120">
+                <label for="price-label-in">Libellé affiché</label>
+                <input type="text" id="price-label-in" name="price_label" placeholder="Ex: À partir de 100 000 FCFA / prestation" maxlength="120">
                 <span class="hint">Laissez vide pour générer automatiquement</span>
             </div>
         </div>
 
-        <!-- Description -->
+        <!-- Spécialités & Description -->
         <div class="section-label">📝 Description & Spécialités</div>
         <div class="form-grid one">
             <div class="fg">
-                <label for="specialties-in">Spécialités (séparées par des virgules)</label>
-                <input type="text" id="specialties-in" name="specialties" placeholder="Ex: Mariages, Baptêmes, Soirées d'entreprise" maxlength="200">
+                <label for="specialties-in">Spécialités phares</label>
+                <input type="text" id="specialties-in" name="specialties" placeholder="Ex: Mariages de luxe, Drone 4K, Buffets 3 services, Fumée lourde..." maxlength="200">
             </div>
             <div class="fg">
-                <label for="desc-in">Description de votre activité</label>
-                <textarea id="desc-in" name="description" rows="4" placeholder="Décrivez votre expérience, vos services, ce qui vous rend unique..." maxlength="1000"></textarea>
+                <label for="desc-in">Présentation de votre savoir-faire</label>
+                <textarea id="desc-in" name="description" rows="4" placeholder="Décrivez votre expérience, votre équipement, votre style et ce qui vous démarque..." maxlength="1000"></textarea>
             </div>
         </div>
 
-        <!-- Image -->
-        <div class="section-label">🖼️ Photo de couverture</div>
-        <div class="form-grid one">
+        <!-- Photos -->
+        <div class="section-label">🖼️ Photo principale & Première réalisation</div>
+        <div class="form-grid">
             <div class="fg">
-                <label for="image-in">URL de votre photo (facultatif)</label>
+                <label for="image-in">Photo de profil / Couverture</label>
                 <input type="url" id="image-in" name="image_url" placeholder="https://..." maxlength="500" oninput="previewImg(this.value)">
-                <span class="hint">Lien direct vers une photo JPG/PNG (ex: depuis Google Drive ou Unsplash)</span>
-                <div class="img-preview" id="img-preview">📷 Aperçu de l'image</div>
+                <span class="hint">Lien direct vers votre photo JPG/PNG</span>
+                <div class="img-preview" id="img-preview">📷 Aperçu de la photo</div>
+            </div>
+            <div class="fg">
+                <label for="p-url-in">Photo d'une réalisation passée (Portfolio)</label>
+                <input type="url" id="p-url-in" name="portfolio_url" placeholder="https://..." maxlength="500">
+                <label for="p-title-in" style="margin-top:8px">Titre de la réalisation</label>
+                <input type="text" id="p-title-in" name="portfolio_title" placeholder="Ex: Mariage VIP aux Almadies" maxlength="100">
             </div>
         </div>
 
         <!-- Submit -->
         <div class="submit-row">
-            <p class="submit-note">En vous inscrivant, votre profil sera visible par tous les visiteurs. Vous pouvez être contacté directement par les clients.</p>
+            <p class="submit-note">En vous inscrivant, vous recevrez directement les demandes d'organisateurs avec tous les détails de leur fête sur WhatsApp.</p>
             <button type="submit" class="btn-submit" id="submit-inscription-btn">
-                Créer mon profil →
+                Créer mon profil gratuitement →
             </button>
         </div>
 
@@ -207,9 +232,9 @@
 
     <div class="perks-row">
         <div class="perk"><div class="dot"></div>Inscription 100% gratuite</div>
-        <div class="perk"><div class="dot"></div>Profil visible immédiatement</div>
-        <div class="perk"><div class="dot"></div>Avis clients visibles</div>
-        <div class="perk"><div class="dot"></div>Contact WhatsApp direct</div>
+        <div class="perk"><div class="dot"></div>Profil & Portfolio immédiats</div>
+        <div class="perk"><div class="dot"></div>Avis clients vérifiés</div>
+        <div class="perk"><div class="dot"></div>Messages WhatsApp complets</div>
     </div>
 
 </main>
@@ -217,7 +242,7 @@
 <script>
 function previewImg(url) {
     const box = document.getElementById('img-preview');
-    if (!url) { box.innerHTML = '📷 Aperçu de l\'image'; return; }
+    if (!url) { box.innerHTML = '📷 Aperçu de la photo'; return; }
     const img = new Image();
     img.onload = () => { box.innerHTML = ''; box.appendChild(img); };
     img.onerror = () => { box.innerHTML = '❌ URL invalide'; };

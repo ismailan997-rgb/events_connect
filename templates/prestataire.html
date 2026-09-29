@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ provider.name }} — Events Connect</title>
     <meta name="description" content="{{ provider.name }} — {{ provider.category_display }} à {{ provider.city }}. {{ provider.specialties }}">
+    <link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name={{ provider.name|urlencode }}&background=0f172a&color=f59e0b&size=200&bold=true&rounded=true">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -42,11 +43,11 @@
         .wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:40px 24px 60px}
 
         /* Profile header */
-        .profile-hero{display:grid;grid-template-columns:1fr 1.1fr;gap:36px;margin-bottom:40px;align-items:start}
+        .profile-hero{display:grid;grid-template-columns:1fr 1.15fr;gap:36px;margin-bottom:44px;align-items:start}
         @media(max-width:800px){.profile-hero{grid-template-columns:1fr}}
 
         /* Image block */
-        .img-block{border-radius:var(--r-card);overflow:hidden;position:relative;aspect-ratio:4/3;background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(245,166,35,.1))}
+        .img-block{border-radius:var(--r-card);overflow:hidden;position:relative;aspect-ratio:4/3;background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(245,166,35,.1));border:1px solid var(--border)}
         .img-block img{width:100%;height:100%;object-fit:cover}
         .img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem}
         .badge-v{position:absolute;top:14px;right:14px;background:rgba(16,232,160,.15);color:var(--emerald);border:1px solid rgba(16,232,160,.3);padding:6px 14px;border-radius:50px;font-size:.75rem;font-weight:700;backdrop-filter:blur(8px)}
@@ -54,11 +55,16 @@
         /* Info block */
         .info-block{display:flex;flex-direction:column;gap:16px}
         .cat-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(245,166,35,.08);border:1px solid var(--border-g);color:var(--gold-l);padding:6px 16px;border-radius:50px;font-size:.83rem;font-weight:600;width:fit-content}
-        .profile-name{font-size:clamp(1.9rem,4vw,2.8rem);font-weight:900;letter-spacing:-1px;line-height:1.1}
+        .profile-name{font-size:clamp(1.9rem,4vw,2.8rem);font-weight:900;letter-spacing:-1px;line-height:1.15}
         .profile-stars{display:flex;align-items:center;gap:10px}
         .stars-big{color:#fbbf24;font-size:1.3rem;letter-spacing:2px}
         .stars-info{font-size:.9rem;color:var(--t2)}
         .stars-info strong{color:var(--t1);font-size:1.1rem}
+
+        /* Event types tags */
+        .events-supported-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+        .events-supported-label{font-size:.75rem;color:var(--gold-l);text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+        .ev-tag{background:rgba(255,255,255,.06);border:1px solid var(--border);padding:5px 12px;border-radius:50px;font-size:.78rem;font-weight:600;color:var(--t1)}
 
         /* Info rows */
         .info-rows{display:flex;flex-direction:column;gap:10px}
@@ -76,22 +82,54 @@
 
         /* Action buttons */
         .actions{display:flex;gap:10px;flex-wrap:wrap}
-        .btn-wa-big{flex:1;min-width:200px;display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 24px;background:linear-gradient(135deg,#25D366,#1aaf55);color:#fff;border:none;border-radius:var(--r-btn);font-size:1rem;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--tr);box-shadow:0 4px 20px rgba(37,211,102,.25)}
+        .btn-wa-big{flex:1;min-width:220px;display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 24px;background:linear-gradient(135deg,#25D366,#1aaf55);color:#fff;border:none;border-radius:var(--r-btn);font-size:1rem;font-weight:800;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--tr);box-shadow:0 4px 20px rgba(37,211,102,.25)}
         .btn-wa-big:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,211,102,.4)}
         .btn-share{flex-shrink:0;padding:15px 20px;border:1px solid var(--border);border-radius:var(--r-btn);background:transparent;color:var(--t2);font-size:.9rem;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--tr)}
         .btn-share:hover{border-color:var(--border-g);color:var(--gold)}
 
-        /* ========= MAP ========= */
-        .section-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-card);overflow:hidden;margin-bottom:28px;transition:var(--tr)}
+        /* ========= SECTION CARDS ========= */
+        .section-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-card);overflow:hidden;margin-bottom:34px;transition:var(--tr)}
         .section-card:hover{border-color:var(--border-g)}
-        .section-hdr{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-        .section-hdr h2{font-size:1.1rem;font-weight:700;letter-spacing:-.3px}
-        .section-hdr .icon{font-size:1.1rem}
+        .section-hdr{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}
+        .section-hdr-left{display:flex;align-items:center;gap:10px}
+        .section-hdr h2{font-size:1.18rem;font-weight:800;letter-spacing:-.3px}
+        .section-hdr .icon{font-size:1.2rem}
+        .sec-count-badge{background:rgba(255,255,255,.06);border:1px solid var(--border);padding:4px 12px;border-radius:50px;font-size:.78rem;color:var(--gold-l);font-weight:600}
+
+        /* ========= PORTFOLIO GALLERY ========= */
+        .portfolio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;padding:24px}
+        .portfolio-item{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:4/3;background:#0d1420;cursor:pointer;border:1px solid var(--border);transition:var(--tr)}
+        .portfolio-item:hover{transform:scale(1.02);border-color:var(--gold);box-shadow:0 12px 30px rgba(0,0,0,.5)}
+        .portfolio-item img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+        .portfolio-item:hover img{transform:scale(1.08)}
+        .portfolio-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,10,16,.9) 0%,rgba(6,10,16,.2) 60%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:16px;opacity:0.95;transition:var(--tr)}
+        .p-event-badge{align-self:flex-start;background:rgba(245,166,35,.2);border:1px solid var(--border-g);color:var(--gold-l);padding:3px 9px;border-radius:50px;font-size:.7rem;font-weight:700;margin-bottom:6px}
+        .portfolio-item-title{font-size:.92rem;font-weight:800;line-height:1.2;margin-bottom:3px;color:#fff}
+        .portfolio-item-caption{font-size:.78rem;color:var(--t2);line-height:1.3}
+
+        /* ========= LIGHTBOX MODAL ========= */
+        .lightbox-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
+        .lightbox-backdrop.open{display:flex}
+        .lightbox-content{max-width:900px;width:100%;position:relative;animation:modalUp .3s ease}
+        .lightbox-img-wrap{width:100%;border-radius:16px;overflow:hidden;border:1px solid var(--border-g);background:#000;box-shadow:0 24px 70px rgba(0,0,0,.8);max-height:75vh;display:flex;align-items:center;justify-content:center}
+        .lightbox-img-wrap img{width:100%;height:auto;max-height:75vh;object-fit:contain}
+        .lightbox-caption-box{margin-top:14px;background:rgba(14,21,34,.9);border:1px solid var(--border);border-radius:12px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+        .lb-title{font-size:1.05rem;font-weight:800}
+        .lb-sub{font-size:.84rem;color:var(--t2)}
+        .lightbox-close{position:absolute;top:-45px;right:0;background:transparent;border:none;color:#fff;font-size:1.8rem;cursor:pointer;padding:6px;transition:var(--tr)}
+        .lightbox-close:hover{color:var(--gold)}
+        .lightbox-nav-btn{position:absolute;top:45%;transform:translateY(-50%);background:rgba(14,21,34,.8);border:1px solid var(--border-g);color:#fff;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.4rem;transition:var(--tr)}
+        .lightbox-nav-btn:hover{background:var(--gold);color:#060a10}
+        .lb-prev{left:-60px}
+        .lb-next{right:-60px}
+        @media(max-width:1050px){.lb-prev{left:10px}.lb-next{right:10px}}
+
+        /* ========= MAP ========= */
         #map{height:320px;width:100%;z-index:1}
         .map-caption{padding:12px 22px;font-size:.82rem;color:var(--t2);display:flex;align-items:center;gap:6px;border-top:1px solid var(--border)}
 
         /* ========= REVIEWS ========= */
-        .reviews-list{padding:0 22px 22px;display:flex;flex-direction:column;gap:14px}
+        .reviews-list{padding:22px;display:flex;flex-direction:column;gap:14px}
         .review-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:14px;padding:16px 18px;animation:fadeUp .4s ease both}
         .review-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px}
         .review-author{font-weight:700;font-size:.93rem}
@@ -111,31 +149,52 @@
         .star-picker label:hover,
         .star-picker label:hover ~ label{color:#fbbf24}
         .star-picker input:checked + label{color:#fbbf24}
-        /* Gold fill on checked */
-        .star-picker input:checked ~ label,
-        .star-picker label:has(~ input:checked){color:#fbbf24}
 
         .form-row{margin-bottom:13px}
         .form-row label{display:block;font-size:.78rem;font-weight:600;color:var(--t2);margin-bottom:7px;text-transform:uppercase;letter-spacing:.7px}
         .form-row input,.form-row textarea{width:100%;padding:12px 14px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:var(--r-btn);color:var(--t1);font-size:.92rem;font-family:'Outfit',sans-serif;transition:var(--tr);outline:none;resize:none}
         .form-row input:focus,.form-row textarea:focus{border-color:var(--gold);background:rgba(245,166,35,.05);box-shadow:0 0 0 3px rgba(245,166,35,.1)}
-        .form-row input::placeholder,.form-row textarea::placeholder{color:var(--t3)}
         .btn-submit-review{background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#060a10;border:none;padding:12px 28px;border-radius:var(--r-btn);font-weight:700;font-size:.93rem;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--tr);box-shadow:0 4px 16px rgba(245,166,35,.3)}
         .btn-submit-review:hover{transform:translateY(-2px);box-shadow:0 7px 24px rgba(245,166,35,.45)}
 
-        /* Leaflet override */
-        .leaflet-container{background:#111827!important}
-        .leaflet-popup-content-wrapper{background:#161d2d;border:1px solid var(--border-g);color:var(--t1);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.5)}
-        .leaflet-popup-tip{background:#161d2d}
+        /* ======================================================== */
+        /* MODAL DE CONTACT WHATSAPP AVEC DÉTAILS DE L'ÉVÉNEMENT    */
+        /* ======================================================== */
+        .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn .25s ease}
+        .modal-backdrop.open{display:flex}
+        .modal-box{background:#0e1522;border:1px solid var(--border-g);border-radius:24px;width:100%;max-width:560px;padding:32px;box-shadow:0 24px 60px rgba(0,0,0,.7);position:relative;animation:modalUp .3s cubic-bezier(0.16,1,0.3,1);max-height:92vh;overflow-y:auto}
+        .modal-close{position:absolute;top:18px;right:18px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--t2);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:var(--tr)}
+        .modal-close:hover{background:rgba(255,255,255,.12);color:#fff}
+        
+        .modal-header{margin-bottom:22px;display:flex;align-items:center;gap:14px}
+        .modal-avatar{width:56px;height:56px;border-radius:14px;overflow:hidden;border:1px solid var(--border-g);flex-shrink:0}
+        .modal-avatar img{width:100%;height:100%;object-fit:cover}
+        .modal-title{font-size:1.3rem;font-weight:900}
+        .modal-subtitle{font-size:.84rem;color:var(--t2)}
 
-        /* Animations */
+        .modal-form{display:flex;flex-direction:column;gap:14px}
+        .m-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        @media(max-width:500px){.m-row{grid-template-columns:1fr}}
+
+        .m-field{display:flex;flex-direction:column;gap:6px}
+        .m-field label{font-size:.76rem;font-weight:700;color:var(--gold-l);text-transform:uppercase;letter-spacing:.8px}
+        .m-field input, .m-field select, .m-field textarea{background:rgba(255,255,255,.05);border:1px solid var(--border);color:#fff;padding:11px 13px;border-radius:10px;font-family:inherit;font-size:.88rem;outline:none;transition:var(--tr)}
+        .m-field input:focus, .m-field select:focus, .m-field textarea:focus{border-color:var(--gold);background:rgba(255,255,255,.08);box-shadow:0 0 0 2px rgba(245,166,35,.2)}
+        .m-field select option{background:#0e1522;color:#fff}
+        .m-field textarea{resize:vertical;min-height:75px}
+
+        .m-preview-box{background:rgba(37,211,102,.07);border:1px dashed rgba(37,211,102,.3);border-radius:12px;padding:14px;font-size:.78rem;color:var(--t2);line-height:1.5}
+        .m-preview-box strong{color:var(--emerald)}
+        .btn-submit-wa{background:linear-gradient(135deg,#25D366,#159d49);color:#fff;border:none;border-radius:12px;padding:15px;font-size:1rem;font-weight:800;font-family:inherit;cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 6px 25px rgba(37,211,102,.35)}
+        .btn-submit-wa:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(37,211,102,.5)}
+
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        @keyframes modalUp{from{opacity:0;transform:scale(0.95) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
         @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-
-        /* Responsive */
-        @media(max-width:600px){.actions{flex-direction:column}.btn-wa-big,.btn-share{width:100%}}
     </style>
 </head>
 <body>
+
 <div class="bg-orbs" aria-hidden="true">
     <div class="orb orb-1"></div><div class="orb orb-2"></div>
 </div>
@@ -174,17 +233,25 @@
                     {% if provider.review_count > 0 %}
                         <strong>{{ provider.avg_rating }}</strong>/5 — {{ provider.review_count }} avis
                     {% else %}
-                        Pas encore d'avis
+                        Nouveau sur Events Connect
                     {% endif %}
                 </span>
             </div>
 
+            <!-- Événements pris en charge -->
+            <div class="events-supported-row">
+                <span class="events-supported-label">Événements :</span>
+                {% for ev in provider.event_types_list %}
+                <span class="ev-tag">{{ ev.emoji }} {{ ev.label }}</span>
+                {% endfor %}
+            </div>
+
             <div class="info-rows">
-                <div class="info-row"><span class="info-row-icon">📍</span><span><strong>Zone :</strong> {{ provider.location }}, {{ provider.city }}</span></div>
+                <div class="info-row"><span class="info-row-icon">📍</span><span><strong>Zone d'intervention :</strong> {{ provider.location }}, {{ provider.city }}</span></div>
                 {% if provider.specialties %}
                 <div class="info-row"><span class="info-row-icon">✨</span><span><strong>Spécialités :</strong> {{ provider.specialties }}</span></div>
                 {% endif %}
-                <div class="info-row"><span class="info-row-icon">📞</span><span><strong>Contact :</strong> +{{ provider.phone }}</span></div>
+                <div class="info-row"><span class="info-row-icon">📞</span><span><strong>WhatsApp Pro :</strong> +{{ provider.phone }}</span></div>
             </div>
 
             <div class="price-tag">
@@ -197,7 +264,7 @@
             {% endif %}
 
             <div class="actions">
-                <button class="btn-wa-big" onclick="wa('{{ provider.name }}','{{ provider.phone }}')" id="contact-wa-btn">
+                <button class="btn-wa-big" onclick="openWhatsAppModal()" id="contact-wa-btn">
                     💬 Demander un devis sur WhatsApp
                 </button>
                 <button class="btn-share" onclick="share()" id="share-btn" title="Partager">🔗 Partager</button>
@@ -205,25 +272,61 @@
         </div>
     </div>
 
+    <!-- ===== SECTION RÉALISATIONS (PORTFOLIO) ===== -->
+    <div class="section-card" id="realisations">
+        <div class="section-hdr">
+            <div class="section-hdr-left">
+                <span class="icon">📸</span>
+                <h2>Réalisations & Événements passés</h2>
+            </div>
+            <span class="sec-count-badge">{{ provider.portfolio_list|length }} photo{% if provider.portfolio_list|length > 1 %}s{% endif %}</span>
+        </div>
+
+        {% if provider.portfolio_list|length > 0 %}
+        <div class="portfolio-grid">
+            {% for item in provider.portfolio_list %}
+            <div class="portfolio-item" onclick="openLightbox({{ loop.index0 }})" title="Cliquer pour agrandir">
+                <img src="{{ item.url }}" alt="{{ item.title }}" loading="lazy">
+                <div class="portfolio-overlay">
+                    {% if item.event_type %}
+                    <span class="p-event-badge">{{ item.event_type }}</span>
+                    {% endif %}
+                    <div class="portfolio-item-title">{{ item.title }}</div>
+                    {% if item.caption %}
+                    <div class="portfolio-item-caption">{{ item.caption }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-reviews">Aucune réalisation publiée pour le moment.</div>
+        {% endif %}
+    </div>
+
     <!-- ===== MAP ===== -->
     <div class="section-card">
         <div class="section-hdr">
-            <span class="icon">🗺️</span>
-            <h2>Localisation — {{ provider.location }}, {{ provider.city }}</h2>
+            <div class="section-hdr-left">
+                <span class="icon">🗺️</span>
+                <h2>Localisation — {{ provider.location }}, {{ provider.city }}</h2>
+            </div>
         </div>
         <div id="map"></div>
-        <div class="map-caption">📍 Localisation approximative basée sur <strong>{{ provider.city }}</strong>, Sénégal</div>
+        <div class="map-caption">📍 Zone d'activité basée sur <strong>{{ provider.city }}</strong>, Sénégal</div>
     </div>
 
     <!-- ===== REVIEWS ===== -->
     <div class="section-card" id="avis">
         <div class="section-hdr">
-            <span class="icon">⭐</span>
-            <h2>Avis clients
-                {% if provider.review_count > 0 %}
-                    — {{ provider.avg_rating }}/5 ({{ provider.review_count }} avis)
-                {% endif %}
-            </h2>
+            <div class="section-hdr-left">
+                <span class="icon">⭐</span>
+                <h2>Avis clients
+                    {% if provider.review_count > 0 %}
+                        — {{ provider.avg_rating }}/5 ({{ provider.review_count }} avis)
+                    {% endif %}
+                </h2>
+            </div>
         </div>
 
         <div class="reviews-list">
@@ -239,16 +342,16 @@
                 {% if r.comment %}<div class="review-comment">"{{ r.comment }}"</div>{% endif %}
             </div>
             {% else %}
-            <div class="no-reviews">💬 Aucun avis pour le moment. Soyez le premier à laisser un commentaire !</div>
+            <div class="no-reviews">💬 Aucun avis pour le moment. Soyez le premier à partager votre expérience !</div>
             {% endfor %}
         </div>
 
         <!-- Add review form -->
         <div class="review-form-wrap">
-            <div class="review-form-title">✍️ Laisser un avis</div>
+            <div class="review-form-title">✍️ Laisser un avis client</div>
             <form action="/prestataire/{{ provider.id }}/avis" method="POST" id="review-form">
                 <div class="form-row">
-                    <label>Note *</label>
+                    <label>Votre note *</label>
                     <div class="star-picker" id="star-picker" role="group" aria-label="Note de 1 à 5 étoiles">
                         <input type="radio" name="rating" id="s5" value="5" required>
                         <label for="s5" title="5 étoiles">★</label>
@@ -267,23 +370,225 @@
                     <input type="text" id="author-in" name="author" placeholder="Ex: Aminata D." required maxlength="60">
                 </div>
                 <div class="form-row">
-                    <label for="comment-in">Commentaire</label>
-                    <textarea id="comment-in" name="comment" rows="3" placeholder="Partagez votre expérience..." maxlength="800"></textarea>
+                    <label for="comment-in">Votre commentaire</label>
+                    <textarea id="comment-in" name="comment" rows="3" placeholder="Qualité de la prestation, ponctualité, ambiance..." maxlength="800"></textarea>
                 </div>
-                <button type="submit" class="btn-submit-review" id="submit-review-btn">Publier l'avis →</button>
+                <button type="submit" class="btn-submit-review" id="submit-review-btn">Publier mon avis →</button>
             </form>
         </div>
     </div>
 
 </main>
 
+<!-- ======================================================== -->
+<!-- LIGHTBOX PLEIN ÉCRAN POUR LES RÉALISATIONS               -->
+<!-- ======================================================== -->
+<div class="lightbox-backdrop" id="lightbox" onclick="handleLbBackdrop(event)">
+    <div class="lightbox-content">
+        <button class="lightbox-close" onclick="closeLightbox()" aria-label="Fermer">✕</button>
+        <button class="lightbox-nav-btn lb-prev" onclick="prevLightbox(event)" aria-label="Précédent">‹</button>
+        <button class="lightbox-nav-btn lb-next" onclick="nextLightbox(event)" aria-label="Suivant">›</button>
+        
+        <div class="lightbox-img-wrap">
+            <img src="" id="lbImg" alt="Réalisation">
+        </div>
+        <div class="lightbox-caption-box">
+            <div>
+                <div class="lb-title" id="lbTitle">Titre de la réalisation</div>
+                <div class="lb-sub" id="lbCaption">Description détaillée de la prestation</div>
+            </div>
+            <button type="button" class="btn-wa-card" style="padding:10px 18px;border-radius:10px;font-size:.85rem;white-space:nowrap;" onclick="closeLightbox();openWhatsAppModal()">
+                Demander similaire sur WhatsApp 💬
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- MODAL DE CONTACT WHATSAPP QUALIFIÉ                       -->
+<!-- ======================================================== -->
+<div class="modal-backdrop" id="waModal" onclick="handleWaBackdrop(event)">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeWhatsAppModal()" aria-label="Fermer">✕</button>
+        
+        <div class="modal-header">
+            <div class="modal-avatar">
+                <img src="{{ provider.image_url }}" alt="{{ provider.name }}">
+            </div>
+            <div>
+                <div class="modal-title">{{ provider.name }}</div>
+                <div class="modal-subtitle">{{ provider.category_display }} — {{ provider.city }}</div>
+            </div>
+        </div>
+
+        <form class="modal-form" onsubmit="sendQualifiedWhatsApp(event)">
+            <div class="m-row">
+                <div class="m-field">
+                    <label for="mEventType">Type d'événement *</label>
+                    <select id="mEventType" required>
+                        <option value="Mariage 💍">Mariage 💍</option>
+                        <option value="Baptême 🕊️">Baptême 🕊️</option>
+                        <option value="Anniversaire 🎂">Anniversaire 🎂</option>
+                        <option value="Soirée & Gala 🍸">Soirée & Gala 🍸</option>
+                        <option value="Événement Pro 💼">Événement Pro 💼</option>
+                        <option value="Autre événement ✨">Autre événement ✨</option>
+                    </select>
+                </div>
+                <div class="m-field">
+                    <label for="mDate">Date de l'événement *</label>
+                    <input type="date" id="mDate" required>
+                </div>
+            </div>
+
+            <div class="m-row">
+                <div class="m-field">
+                    <label for="mLocation">Ville / Lieu de réception *</label>
+                    <input type="text" id="mLocation" value="{{ provider.city }}" required>
+                </div>
+                <div class="m-field">
+                    <label for="mGuests">Nombre d'invités estimé</label>
+                    <select id="mGuests">
+                        <option value="Moins de 50 personnes">Moins de 50 personnes</option>
+                        <option value="50 à 100 personnes" selected>50 à 100 personnes</option>
+                        <option value="100 à 250 personnes">100 à 250 personnes</option>
+                        <option value="250 à 500 personnes">250 à 500 personnes</option>
+                        <option value="Plus de 500 personnes">Plus de 500 personnes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="m-field">
+                <label for="mBudget">Budget indicatif (Optionnel)</label>
+                <input type="text" id="mBudget" placeholder="Ex: {{ provider.price_label }}">
+            </div>
+
+            <div class="m-field">
+                <label for="mDetails">Précisions & Besoins particuliers</label>
+                <textarea id="mDetails" placeholder="Ex: Horaires souhaités, lieu précis, style attendu, options particulières..."></textarea>
+            </div>
+
+            <div class="m-preview-box">
+                💡 <strong>Message WhatsApp instantané :</strong> Vos détails seront directement pré-remplis pour recevoir une réponse rapide et adaptée.
+            </div>
+
+            <button type="submit" class="btn-submit-wa">
+                🚀 Envoyer ma demande sur WhatsApp
+            </button>
+        </form>
+    </div>
+</div>
+
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN/WPcM=" crossorigin=""></script>
 <script>
-// ---- WhatsApp contact ----
-function wa(name, phone) {
-    const msg = `Bonjour ${name} ! 👋\nJ'ai vu votre profil sur *Events Connect*.\nJe souhaite demander un devis pour un événement.\nÊtes-vous disponible ? 😊`;
+// Données du portfolio pour la Lightbox
+const portfolioData = {{ provider.portfolio_list | tojson }};
+let currentLbIndex = 0;
+
+function openLightbox(index) {
+    if (!portfolioData || portfolioData.length === 0) return;
+    currentLbIndex = index;
+    renderLightboxItem();
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function renderLightboxItem() {
+    const item = portfolioData[currentLbIndex];
+    document.getElementById('lbImg').src = item.url;
+    document.getElementById('lbTitle').textContent = item.title;
+    document.getElementById('lbCaption').textContent = item.caption || item.event_type || '';
+}
+
+function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function prevLightbox(e) {
+    if (e) e.stopPropagation();
+    currentLbIndex = (currentLbIndex - 1 + portfolioData.length) % portfolioData.length;
+    renderLightboxItem();
+}
+
+function nextLightbox(e) {
+    if (e) e.stopPropagation();
+    currentLbIndex = (currentLbIndex + 1) % portfolioData.length;
+    renderLightboxItem();
+}
+
+function handleLbBackdrop(e) {
+    if (e.target.id === 'lightbox') closeLightbox();
+}
+
+// ---- Modal WhatsApp ----
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 14);
+const dateInput = document.getElementById('mDate');
+if (dateInput) {
+    dateInput.value = tomorrow.toISOString().split('T')[0];
+    dateInput.min = new Date().toISOString().split('T')[0];
+}
+
+function openWhatsAppModal() {
+    document.getElementById('waModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeWhatsAppModal() {
+    document.getElementById('waModal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function handleWaBackdrop(e) {
+    if (e.target.id === 'waModal') closeWhatsAppModal();
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeLightbox();
+        closeWhatsAppModal();
+    } else if (e.key === 'ArrowLeft' && document.getElementById('lightbox').classList.contains('open')) {
+        prevLightbox();
+    } else if (e.key === 'ArrowRight' && document.getElementById('lightbox').classList.contains('open')) {
+        nextLightbox();
+    }
+});
+
+function sendQualifiedWhatsApp(e) {
+    e.preventDefault();
+    const providerName = "{{ provider.name }}";
+    const phone = "{{ provider.phone }}";
+    const eventType = document.getElementById('mEventType').value;
+    const dateVal = document.getElementById('mDate').value;
+    const locationVal = document.getElementById('mLocation').value;
+    const guestsVal = document.getElementById('mGuests').value;
+    const budgetVal = document.getElementById('mBudget').value.trim();
+    const detailsVal = document.getElementById('mDetails').value.trim();
+
+    let dateFormatted = dateVal;
+    try {
+        const d = new Date(dateVal);
+        dateFormatted = d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    } catch (err) {}
+
+    let msg = `Bonjour ${providerName} ! 👋\n`;
+    msg += `J'ai découvert votre profil et vos superbes réalisations sur *Events Connect*.\n\n`;
+    msg += `Je souhaite obtenir un devis pour mon événement :\n`;
+    msg += `🎉 *Type d'événement* : ${eventType}\n`;
+    msg += `📅 *Date prévue* : ${dateFormatted}\n`;
+    msg += `📍 *Lieu / Ville* : ${locationVal}\n`;
+    msg += `👥 *Nombre d'invités* : ~${guestsVal}\n`;
+    if (budgetVal) {
+        msg += `💰 *Budget indicatif* : ${budgetVal}\n`;
+    }
+    if (detailsVal) {
+        msg += `📝 *Précisions* : ${detailsVal}\n`;
+    }
+    msg += `\nÊtes-vous disponible à cette date pour échanger ? Merci beaucoup ! 😊`;
+
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    closeWhatsAppModal();
 }
 
 // ---- Share ----
@@ -291,57 +596,30 @@ function share() {
     if (navigator.share) {
         navigator.share({ title: '{{ provider.name }} — Events Connect', url: window.location.href });
     } else {
-        navigator.clipboard.writeText(window.location.href).then(() => alert('Lien copié !'));
+        navigator.clipboard.writeText(window.location.href).then(() => alert('Lien copié dans le presse-papiers !'));
     }
 }
 
-// ---- Star picker visual fix (RTL trick) ----
-document.querySelectorAll('.star-picker input').forEach(input => {
-    input.addEventListener('change', () => {
-        const val = parseInt(input.value);
-        document.querySelectorAll('.star-picker label').forEach((lbl, idx) => {
-            // labels are in reverse order (5,4,3,2,1)
-            const lv = 5 - idx;
-            lbl.style.color = lv <= val ? '#fbbf24' : 'var(--t3)';
-        });
-    });
-});
-
 // ---- Leaflet Map ----
 (function() {
-    const city = encodeURIComponent('{{ provider.city }}, Sénégal');
     const location = '{{ provider.location }}, {{ provider.city }}, Sénégal';
     const providerName = '{{ provider.name }}';
     const catEmoji = '{{ provider.category_emoji }}';
 
-    // Initialize map with default Dakar coords while geocoding
-    const map = L.map('map', {
-        zoomControl: true,
-        scrollWheelZoom: false
-    }).setView([14.6928, -17.4467], 12);
-
+    const map = L.map('map', { zoomControl: true, scrollWheelZoom: false }).setView([14.6928, -17.4467], 12);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         attribution: '© OpenStreetMap © CartoDB',
         subdomains: 'abcd', maxZoom: 19
     }).addTo(map);
 
-    // Custom marker icon
     const markerIcon = L.divIcon({
         className: '',
-        html: `<div style="
-            width:46px;height:46px;border-radius:50%;
-            background:linear-gradient(135deg,#f5a623,#d4880a);
-            display:flex;align-items:center;justify-content:center;
-            font-size:1.3rem;
-            box-shadow:0 4px 20px rgba(245,166,35,.5), 0 0 0 4px rgba(245,166,35,.2);
-            border:2px solid rgba(255,255,255,.2);
-        ">${catEmoji}</div>`,
+        html: `<div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#f5a623,#d4880a);display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 20px rgba(245,166,35,.5);border:2px solid rgba(255,255,255,.2);">${catEmoji}</div>`,
         iconSize: [46, 46],
         iconAnchor: [23, 23],
         popupAnchor: [0, -26]
     });
 
-    // Geocode via Nominatim
     fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`, {
         headers: { 'Accept-Language': 'fr' }
     })
@@ -351,33 +629,13 @@ document.querySelectorAll('.star-picker input').forEach(input => {
             const lat = parseFloat(data[0].lat);
             const lng = parseFloat(data[0].lon);
             map.setView([lat, lng], 14);
-            L.marker([lat, lng], { icon: markerIcon })
-                .addTo(map)
-                .bindPopup(`<strong>${providerName}</strong><br>📍 {{ provider.location }}`)
-                .openPopup();
+            L.marker([lat, lng], { icon: markerIcon }).addTo(map).bindPopup(`<strong>${providerName}</strong><br>📍 {{ provider.location }}`).openPopup();
         } else {
-            // Fallback: geocode just the city
-            return fetch(`https://nominatim.openstreetmap.org/search?q=${'{{provider.city}}'}, Sénégal&format=json&limit=1`)
-                .then(r => r.json())
-                .then(d => {
-                    if (d && d.length > 0) {
-                        const lat = parseFloat(d[0].lat);
-                        const lng = parseFloat(d[0].lon);
-                        map.setView([lat, lng], 13);
-                        L.marker([lat, lng], { icon: markerIcon })
-                            .addTo(map)
-                            .bindPopup(`<strong>${providerName}</strong><br>📍 {{ provider.city }}`)
-                            .openPopup();
-                    }
-                });
+            L.marker([14.6928, -17.4467], { icon: markerIcon }).addTo(map).bindPopup(`<strong>${providerName}</strong><br>📍 {{ provider.city }}`).openPopup();
         }
     })
     .catch(() => {
-        // Silently fail - map stays at Dakar default
-        L.marker([14.6928, -17.4467], { icon: markerIcon })
-            .addTo(map)
-            .bindPopup(`<strong>${providerName}</strong><br>📍 {{ provider.city }}`)
-            .openPopup();
+        L.marker([14.6928, -17.4467], { icon: markerIcon }).addTo(map).bindPopup(`<strong>${providerName}</strong><br>📍 {{ provider.city }}`).openPopup();
     });
 })();
 </script>

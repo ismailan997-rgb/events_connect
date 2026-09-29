@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Events Connect — Prestataires événementiels au Sénégal</title>
-    <meta name="description" content="Trouvez photographes, DJs, traiteurs et décorateurs vérifiés pour vos événements au Sénégal.">
+    <title>Events Connect — Prestataires événementiels au Sénégal 🇸🇳</title>
+    <link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name=Events+Connect&background=0f172a&color=f59e0b&size=200&bold=true&rounded=true">
+    <meta name="description" content="Trouvez photographes, DJs, traiteurs et décorateurs vérifiés pour vos mariages, baptêmes, anniversaires et soirées au Sénégal.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -26,7 +27,7 @@
         ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0a0f18}
         ::-webkit-scrollbar-thumb{background:rgba(245,166,35,.3);border-radius:3px}
 
-        /* Orbs */
+        /* Orbs background */
         .bg-orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
         .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.11;animation:drift 20s ease-in-out infinite alternate}
         .orb-1{width:500px;height:500px;background:var(--purple);top:-100px;left:-100px}
@@ -34,104 +35,147 @@
         .orb-3{width:350px;height:350px;background:#0ea5e9;bottom:-100px;left:30%;animation-delay:-14s}
         @keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(30px,20px) scale(1.1)}}
 
+        /* Navbar */
+        .nav{position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);background:rgba(6,10,16,.82);border-bottom:1px solid var(--border);padding:14px 0}
+        .nav-in{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+        .nav-logo{font-size:1.35rem;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none;display:flex;align-items:center;gap:8px}
+        .nav-actions{display:flex;align-items:center;gap:12px}
+        .nav-badge{background:rgba(255,255,255,.05);border:1px solid var(--border);padding:6px 14px;border-radius:50px;font-size:.82rem;color:var(--t2);font-weight:500}
+        .btn-inscri{background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#060a10;font-weight:700;font-size:.85rem;padding:9px 18px;border-radius:var(--r-btn);text-decoration:none;transition:var(--tr);display:inline-flex;align-items:center;gap:6px}
+        .btn-inscri:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(245,166,35,.35)}
+
         /* Layout */
         .wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 24px}
 
-        /* Navbar */
-        .nav{position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);background:rgba(6,10,16,.82);border-bottom:1px solid var(--border);padding:14px 0}
-        .nav-in{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-        .nav-logo{font-size:1.35rem;font-weight:800;background:linear-gradient(135deg,var(--gold),var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.5px;text-decoration:none}
-        .nav-actions{display:flex;align-items:center;gap:10px}
-        .nav-badge{background:rgba(245,166,35,.1);color:var(--gold);border:1px solid var(--border-g);padding:6px 14px;border-radius:50px;font-size:.8rem;font-weight:600}
-        .btn-inscri{background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#060a10;border:none;padding:9px 20px;border-radius:var(--r-btn);font-weight:700;font-size:.85rem;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--tr);text-decoration:none;display:inline-block}
-        .btn-inscri:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(245,166,35,.4)}
-
         /* Hero */
-        .hero{text-align:center;padding:80px 0 50px}
-        .pill{display:inline-flex;align-items:center;gap:8px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);color:var(--gold-l);padding:8px 20px;border-radius:50px;font-size:.85rem;font-weight:500;margin-bottom:24px;animation:fadeUp .6s ease both}
-        .hero h1{font-size:clamp(2.6rem,6vw,4.8rem);font-weight:900;line-height:1.08;letter-spacing:-2px;animation:fadeUp .7s .1s ease both}
-        .grad{background:linear-gradient(135deg,var(--gold),var(--gold-l),#ff9f43);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .hero-sub{font-size:1.1rem;color:var(--t2);max-width:540px;margin:18px auto 0;animation:fadeUp .7s .2s ease both}
-        .stats{display:flex;gap:36px;justify-content:center;flex-wrap:wrap;margin:36px 0;animation:fadeUp .7s .3s ease both}
-        .stat-n{font-size:1.9rem;font-weight:800;color:var(--gold)}
-        .stat-l{font-size:.8rem;color:var(--t2);font-weight:500;margin-top:2px}
+        .hero{text-align:center;padding:70px 0 40px;animation:fadeUp .6s ease both}
+        .pill{display:inline-flex;align-items:center;gap:8px;background:rgba(245,166,35,.08);border:1px solid var(--border-g);color:var(--gold-l);padding:7px 18px;border-radius:50px;font-size:.84rem;font-weight:600;margin-bottom:20px}
+        .hero h1{font-size:clamp(2.3rem,5vw,3.6rem);font-weight:900;letter-spacing:-1.5px;line-height:1.15;margin-bottom:14px}
+        .grad{background:linear-gradient(135deg,#fff 30%,var(--gold-l) 70%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .hero-sub{font-size:1.12rem;color:var(--t2);max-width:680px;margin:0 auto 30px}
 
-        /* Search */
-        .search-box{background:rgba(255,255,255,.03);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:24px;padding:26px;margin:0 0 54px;animation:fadeUp .7s .4s ease both;transition:var(--tr)}
+        /* Stats */
+        .stats{display:flex;justify-content:center;gap:36px;margin-bottom:32px;flex-wrap:wrap}
+        .stat{text-align:center}
+        .stat-n{font-size:1.6rem;font-weight:800;color:var(--gold)}
+        .stat-l{font-size:.82rem;color:var(--t3)}
+
+        /* Quick Event Filters (Pills) */
+        .event-pills-bar{display:flex;justify-content:center;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+        .event-pill-btn{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:50px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--t2);font-size:.88rem;font-weight:600;text-decoration:none;transition:var(--tr)}
+        .event-pill-btn:hover{color:var(--gold-l);border-color:var(--border-g);background:rgba(245,166,35,.06);transform:translateY(-1px)}
+        .event-pill-btn.active{background:linear-gradient(135deg,rgba(245,166,35,.2),rgba(245,166,35,.08));border-color:var(--gold);color:var(--gold-l);box-shadow:0 0 15px rgba(245,166,35,.25)}
+
+        /* Search Box */
+        .search-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r-card);padding:24px 28px;margin-bottom:44px;backdrop-filter:blur(16px);box-shadow:0 12px 40px rgba(0,0,0,.4);transition:var(--tr)}
         .search-box:hover{border-color:var(--border-g)}
-        .s-label{font-size:.78rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px}
-        .s-form{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
-        .fg{flex:1;min-width:150px}
-        .fg label{display:block;font-size:.75rem;font-weight:600;color:var(--t2);margin-bottom:7px;text-transform:uppercase;letter-spacing:.8px}
-        .fg select,.fg input{width:100%;padding:12px 14px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:var(--r-btn);color:var(--t1);font-size:.93rem;font-family:'Outfit',sans-serif;transition:var(--tr);outline:none}
-        .fg select:focus,.fg input:focus{border-color:var(--gold);background:rgba(245,166,35,.05);box-shadow:0 0 0 3px rgba(245,166,35,.1)}
-        .fg select option{background:#111827}
-        .fg input::placeholder{color:var(--t3)}
-        .btn-srch{background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#060a10;border:none;padding:12px 26px;border-radius:var(--r-btn);font-weight:700;font-size:.93rem;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--tr);box-shadow:0 4px 20px rgba(245,166,35,.3);white-space:nowrap}
-        .btn-srch:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(245,166,35,.45)}
+        .s-label{font-size:.78rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+        .s-form{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+        .fg{flex:1;min-width:170px}
+        .fg label{display:block;font-size:.78rem;color:var(--t2);font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px}
+        .fg select, .fg input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--t1);padding:12px 14px;border-radius:var(--r-btn);font-family:inherit;font-size:.9rem;outline:none;transition:var(--tr)}
+        .fg select:focus, .fg input:focus{border-color:var(--gold);background:rgba(255,255,255,.08);box-shadow:0 0 0 3px rgba(245,166,35,.15)}
+        .fg select option{background:#0e1520;color:#fff}
+        .btn-srch{padding:12px 28px;background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#060a10;border:none;border-radius:var(--r-btn);font-family:inherit;font-size:.95rem;font-weight:800;cursor:pointer;transition:var(--tr);white-space:nowrap;height:48px}
+        .btn-srch:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,166,35,.35)}
 
-        /* Section header */
-        .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:10px}
-        .sec-title{font-size:1.4rem;font-weight:800;letter-spacing:-.5px}
-        .sec-count{background:rgba(245,166,35,.1);color:var(--gold);border:1px solid var(--border-g);padding:5px 14px;border-radius:50px;font-size:.8rem;font-weight:700}
+        /* Section Header */
+        .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+        .sec-title{font-size:1.35rem;font-weight:800;letter-spacing:-.4px}
+        .sec-count{background:rgba(255,255,255,.06);border:1px solid var(--border);padding:4px 12px;border-radius:50px;font-size:.8rem;color:var(--t2)}
 
         /* Grid */
-        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:22px}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:24px;margin-bottom:64px}
 
         /* Card */
-        .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-card);overflow:hidden;transition:var(--tr);animation:fadeUp .5s ease both;text-decoration:none;color:inherit;display:flex;flex-direction:column}
-        .card:hover{transform:translateY(-6px);border-color:rgba(245,166,35,.25);background:var(--card-h);box-shadow:0 8px 32px rgba(0,0,0,.4),0 0 40px rgba(245,166,35,.08)}
-        .card-img{position:relative;height:200px;overflow:hidden;flex-shrink:0}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-card);overflow:hidden;transition:var(--tr);display:flex;flex-direction:column;text-decoration:none;color:inherit;animation:fadeUp .5s ease both;position:relative}
+        .card:hover{transform:translateY(-5px);border-color:var(--border-g);box-shadow:0 16px 40px rgba(0,0,0,.45)}
+        .card-img{position:relative;height:210px;overflow:hidden;background:#0d1420}
         .card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
         .card:hover .card-img img{transform:scale(1.05)}
-        .card-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(6,10,16,.85) 100%)}
-        .tag-cat{position:absolute;top:12px;left:12px;background:rgba(6,10,16,.72);color:var(--gold-l);border:1px solid rgba(245,166,35,.35);padding:4px 11px;border-radius:6px;font-size:.73rem;font-weight:700;backdrop-filter:blur(8px)}
-        .badge-v{position:absolute;top:12px;right:12px;background:rgba(16,232,160,.15);color:var(--emerald);border:1px solid rgba(16,232,160,.3);padding:4px 11px;border-radius:50px;font-size:.7rem;font-weight:700;backdrop-filter:blur(8px)}
-        .card-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3.5rem;background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(245,166,35,.1))}
-        .card-body{padding:18px;display:flex;flex-direction:column;flex:1}
-        .card-name{font-size:1.1rem;font-weight:700;letter-spacing:-.3px;margin-bottom:4px}
-        .card-stars{display:flex;align-items:center;gap:6px;margin-bottom:8px}
-        .stars{color:#fbbf24;font-size:.9rem;letter-spacing:1px}
+        .card-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem}
+        .card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,10,16,.9) 0%,transparent 60%)}
+        .tag-cat{position:absolute;top:12px;left:12px;background:rgba(6,10,16,.75);border:1px solid var(--border);backdrop-filter:blur(8px);color:var(--gold-l);padding:4px 10px;border-radius:50px;font-size:.75rem;font-weight:700}
+        .badge-v{position:absolute;top:12px;right:12px;background:rgba(16,232,160,.15);border:1px solid rgba(16,232,160,.3);backdrop-filter:blur(8px);color:var(--emerald);padding:4px 10px;border-radius:50px;font-size:.72rem;font-weight:700}
+        .card-portfolio-pill{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);border:1px solid var(--border);color:#fff;padding:3px 9px;border-radius:50px;font-size:.72rem;font-weight:600;display:flex;align-items:center;gap:4px}
+
+        .card-body{padding:20px;display:flex;flex-direction:column;flex:1}
+        .card-name{font-size:1.18rem;font-weight:800;margin-bottom:6px;line-height:1.2}
+        .card-stars{display:flex;align-items:center;gap:7px;margin-bottom:10px}
+        .stars{color:#fbbf24;font-size:.88rem;letter-spacing:1px}
         .stars-count{font-size:.78rem;color:var(--t2)}
-        .card-price{font-size:1rem;font-weight:700;color:var(--emerald);margin-bottom:10px}
-        .card-loc{font-size:.82rem;color:var(--t2);margin-bottom:14px;display:flex;align-items:center;gap:5px}
+        .card-events{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+        .event-badge-sm{background:rgba(255,255,255,.05);border:1px solid var(--border);font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:4px;color:var(--t2)}
+        .card-price{font-size:1.05rem;font-weight:800;color:var(--emerald);margin-bottom:6px}
+        .card-loc{font-size:.82rem;color:var(--t2);margin-bottom:16px;display:flex;align-items:center;gap:4px}
+
+        /* Portfolio thumb row */
+        .portfolio-thumbs-row{display:flex;gap:6px;margin-bottom:16px}
+        .p-thumb{flex:1;height:52px;border-radius:8px;overflow:hidden;border:1px solid var(--border);position:relative}
+        .p-thumb img{width:100%;height:100%;object-fit:cover;transition:var(--tr)}
+        .p-thumb:hover img{transform:scale(1.1)}
+
         .card-actions{display:flex;gap:8px;margin-top:auto}
-        .btn-profile{flex:1;padding:10px;border:1px solid var(--border-g);border-radius:var(--r-btn);background:transparent;color:var(--gold);font-size:.85rem;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--tr);text-decoration:none;text-align:center}
-        .btn-profile:hover{background:rgba(245,166,35,.1)}
-        .btn-wa{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;background:linear-gradient(135deg,#25D366,#1aaf55);color:#fff;border:none;border-radius:var(--r-btn);font-size:.85rem;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--tr);text-decoration:none}
-        .btn-wa:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,211,102,.35)}
+        .btn-profile{flex:1;text-align:center;padding:10px;border:1px solid var(--border);border-radius:var(--r-btn);font-size:.82rem;font-weight:600;color:var(--t1);transition:var(--tr);text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+        .btn-profile:hover{border-color:var(--border-g);color:var(--gold)}
+        .btn-wa-card{flex:1.2;display:flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(135deg,#25D366,#1aaf55);color:#fff;border:none;border-radius:var(--r-btn);font-size:.82rem;font-weight:700;cursor:pointer;transition:var(--tr);padding:10px}
+        .btn-wa-card:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(37,211,102,.35)}
 
         /* Empty state */
-        .empty{text-align:center;padding:70px 20px;color:var(--t2);grid-column:1/-1}
-        .empty .ico{font-size:3rem;display:block;margin-bottom:14px}
+        .empty{text-align:center;padding:64px 20px;grid-column:1/-1;background:var(--card);border:1px solid var(--border);border-radius:var(--r-card)}
+        .empty .ico{font-size:3rem;margin-bottom:14px;display:block}
+        .empty p{color:var(--t2);font-size:1rem}
 
         /* CTA Banner */
-        .cta-banner{margin:60px 0 0;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(245,166,35,.08));border:1px solid rgba(124,58,237,.25);border-radius:28px;padding:44px 36px;text-align:center;position:relative;overflow:hidden}
-        .cta-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(124,58,237,.1),transparent 70%);pointer-events:none}
-        .cta-inner{position:relative;z-index:1}
-        .cta-banner h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
-        .cta-banner h2 span{background:linear-gradient(135deg,var(--purple-l),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .cta-banner p{color:var(--t2);font-size:1rem;margin-bottom:26px}
-        .btn-cta{display:inline-block;background:linear-gradient(135deg,var(--purple),var(--purple-l));color:#fff;border:none;padding:14px 36px;border-radius:var(--r-btn);font-weight:700;font-size:1rem;font-family:'Outfit',sans-serif;cursor:pointer;transition:var(--tr);text-decoration:none;box-shadow:0 4px 20px rgba(124,58,237,.35)}
-        .btn-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(124,58,237,.5)}
-        .perks{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:22px}
-        .perk{display:flex;align-items:center;gap:7px;font-size:.82rem;color:var(--t2);font-weight:500}
-        .dot{width:6px;height:6px;border-radius:50%;background:var(--emerald);flex-shrink:0}
+        .cta-banner{background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(245,166,35,.12));border:1px solid var(--border-g);border-radius:var(--r-card);padding:44px 36px;margin-bottom:60px;position:relative;overflow:hidden}
+        .cta-inner{position:relative;z-index:1;max-width:680px}
+        .cta-inner h3{font-size:1.7rem;font-weight:900;letter-spacing:-.8px;margin-bottom:10px}
+        .cta-inner p{color:var(--t2);font-size:.95rem;margin-bottom:22px}
+        .cta-perks{display:flex;gap:20px;flex-wrap:wrap;margin-top:16px}
+        .perk{display:flex;align-items:center;gap:7px;font-size:.82rem;color:var(--t2)}
+        .perk .dot{width:6px;height:6px;border-radius:50%;background:var(--emerald)}
 
         /* Footer */
-        footer{text-align:center;padding:36px 0;color:var(--t3);font-size:.82rem;border-top:1px solid var(--border);margin-top:56px}
+        footer{text-align:center;padding:36px 0;color:var(--t3);font-size:.85rem;border-top:1px solid var(--border);margin-top:40px}
         footer strong{color:var(--gold)}
 
-        /* Animations */
-        @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
-        .card:nth-child(1){animation-delay:.05s}.card:nth-child(2){animation-delay:.1s}
-        .card:nth-child(3){animation-delay:.15s}.card:nth-child(4){animation-delay:.2s}
-        .card:nth-child(5){animation-delay:.25s}.card:nth-child(6){animation-delay:.3s}
+        /* ======================================================== */
+        /* MODAL DE CONTACT WHATSAPP AVEC DÉTAILS DE L'ÉVÉNEMENT    */
+        /* ======================================================== */
+        .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn .25s ease}
+        .modal-backdrop.open{display:flex}
+        .modal-box{background:#0e1522;border:1px solid var(--border-g);border-radius:24px;width:100%;max-width:560px;padding:32px;box-shadow:0 24px 60px rgba(0,0,0,.7);position:relative;animation:modalUp .3s cubic-bezier(0.16,1,0.3,1);max-height:92vh;overflow-y:auto}
+        .modal-close{position:absolute;top:18px;right:18px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--t2);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:var(--tr)}
+        .modal-close:hover{background:rgba(255,255,255,.12);color:#fff}
+        
+        .modal-header{margin-bottom:22px;display:flex;align-items:center;gap:14px}
+        .modal-avatar{width:56px;height:56px;border-radius:14px;overflow:hidden;border:1px solid var(--border-g);flex-shrink:0}
+        .modal-avatar img{width:100%;height:100%;object-fit:cover}
+        .modal-title{font-size:1.3rem;font-weight:900}
+        .modal-subtitle{font-size:.84rem;color:var(--t2)}
 
-        /* Responsive */
+        .modal-form{display:flex;flex-direction:column;gap:14px}
+        .m-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        @media(max-width:500px){.m-row{grid-template-columns:1fr}}
+
+        .m-field{display:flex;flex-direction:column;gap:6px}
+        .m-field label{font-size:.76rem;font-weight:700;color:var(--gold-l);text-transform:uppercase;letter-spacing:.8px}
+        .m-field input, .m-field select, .m-field textarea{background:rgba(255,255,255,.05);border:1px solid var(--border);color:#fff;padding:11px 13px;border-radius:10px;font-family:inherit;font-size:.88rem;outline:none;transition:var(--tr)}
+        .m-field input:focus, .m-field select:focus, .m-field textarea:focus{border-color:var(--gold);background:rgba(255,255,255,.08);box-shadow:0 0 0 2px rgba(245,166,35,.2)}
+        .m-field select option{background:#0e1522;color:#fff}
+        .m-field textarea{resize:vertical;min-height:75px}
+
+        .m-preview-box{background:rgba(37,211,102,.07);border:1px dashed rgba(37,211,102,.3);border-radius:12px;padding:14px;font-size:.78rem;color:var(--t2);line-height:1.5}
+        .m-preview-box strong{color:var(--emerald)}
+        .btn-submit-wa{background:linear-gradient(135deg,#25D366,#159d49);color:#fff;border:none;border-radius:12px;padding:15px;font-size:1rem;font-weight:800;font-family:inherit;cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 6px 25px rgba(37,211,102,.35)}
+        .btn-submit-wa:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(37,211,102,.5)}
+
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        @keyframes modalUp{from{opacity:0;transform:scale(0.94) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+        
         @media(max-width:768px){
-            .hero{padding:56px 0 36px}
-            .stats{gap:20px}
+            .hero{padding:50px 0 24px}
             .s-form{flex-direction:column}
             .btn-srch{width:100%}
             .grid{grid-template-columns:1fr}
@@ -140,6 +184,7 @@
     </style>
 </head>
 <body>
+
 <div class="bg-orbs" aria-hidden="true">
     <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
 </div>
@@ -159,19 +204,41 @@
     <section class="hero">
         <div class="pill">✨ La plateforme #1 des événements au Sénégal</div>
         <h1>Trouvez vos<br><span class="grad">prestataires d'exception</span></h1>
-        <p class="hero-sub">Photographes, DJs, Traiteurs & Décorateurs certifiés. Contactez-les directement sur WhatsApp.</p>
+        <p class="hero-sub">Photographes, DJs, Traiteurs & Décorateurs certifiés pour vos mariages, baptêmes, anniversaires et soirées. Contact direct sur WhatsApp.</p>
+        
+        <!-- Filtres rapides par événement -->
+        <div class="event-pills-bar">
+            <a href="/" class="event-pill-btn {% if not sel_event_type %}active{% endif %}">Tous les événements</a>
+            {% for key, ev in event_types.items() %}
+            <a href="/?event_type={{ key }}{% if sel_category %}&category={{ sel_category }}{% endif %}{% if sel_city %}&city={{ sel_city }}{% endif %}" 
+               class="event-pill-btn {% if sel_event_type == key %}active{% endif %}">
+               {{ ev.emoji }} {{ ev.label }}
+            </a>
+            {% endfor %}
+        </div>
+
         <div class="stats">
-            <div class="stat"><div class="stat-n">{{ providers|length }}</div><div class="stat-l">Prestataires inscrits</div></div>
-            <div class="stat"><div class="stat-n">4.8★</div><div class="stat-l">Note moyenne</div></div>
-            <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Gratuit pour les clients</div></div>
+            <div class="stat"><div class="stat-n">{{ providers|length }}</div><div class="stat-l">Prestataires trouvés</div></div>
+            <div class="stat"><div class="stat-n">4.9★</div><div class="stat-l">Note d'excellence</div></div>
+            <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Mise en relation directe</div></div>
         </div>
     </section>
 
+    <!-- Moteur de recherche avancé -->
     <div class="search-box" role="search">
-        <div class="s-label">🔍 Rechercher un prestataire</div>
+        <div class="s-label">🔍 Rechercher par événement, métier et ville</div>
         <form class="s-form" action="/" method="GET">
             <div class="fg">
-                <label for="cat-sel">Métier</label>
+                <label for="event-sel">Type d'événement</label>
+                <select name="event_type" id="event-sel">
+                    <option value="">Tous les événements</option>
+                    {% for key, ev in event_types.items() %}
+                    <option value="{{ key }}" {% if sel_event_type == key %}selected{% endif %}>{{ ev.emoji }} {{ ev.label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="fg">
+                <label for="cat-sel">Métier / Service</label>
                 <select name="category" id="cat-sel">
                     <option value="">Tous les métiers</option>
                     {% for key, cat in categories.items() %}
@@ -185,80 +252,283 @@
             </div>
             <div class="fg">
                 <label for="price-in">Budget Max (FCFA)</label>
-                <input type="number" name="max_price" id="price-in" placeholder="Ex: 100000" value="{{ sel_max_price }}">
+                <input type="number" name="max_price" id="price-in" placeholder="Ex: 150000" value="{{ sel_max_price }}">
             </div>
-            <button type="submit" class="btn-srch" id="search-btn">Chercher →</button>
+            <button type="submit" class="btn-srch" id="search-btn">Trouver mon prestataire →</button>
         </form>
     </div>
 
+    <!-- Liste des prestataires -->
     <section>
         <div class="sec-hdr">
             <h2 class="sec-title" id="providers-heading">Prestataires disponibles</h2>
             <span class="sec-count">{{ providers|length }} résultat{% if providers|length > 1 %}s{% endif %}</span>
         </div>
+
         <div class="grid">
             {% for p in providers %}
-            <a class="card" href="/prestataire/{{ p.id }}" id="card-{{ p.id }}" aria-label="{{ p.name }}">
-                <div class="card-img">
-                    {% if p.image_url %}
-                        <img src="{{ p.image_url }}" alt="{{ p.name }}" loading="lazy">
-                    {% else %}
-                        <div class="card-placeholder">{{ p.category_emoji }}</div>
-                    {% endif %}
-                    <div class="card-overlay"></div>
-                    <span class="tag-cat">{{ p.category_emoji }} {{ p.category_display }}</span>
-                    {% if p.verified %}<span class="badge-v">✓ Vérifié</span>{% endif %}
-                </div>
+            <div class="card" id="card-{{ p.id }}">
+                <a href="/prestataire/{{ p.id }}" style="text-decoration:none;color:inherit;">
+                    <div class="card-img">
+                        {% if p.image_url %}
+                            <img src="{{ p.image_url }}" alt="{{ p.name }}" loading="lazy">
+                        {% else %}
+                            <div class="card-placeholder">{{ p.category_emoji }}</div>
+                        {% endif %}
+                        <div class="card-overlay"></div>
+                        <span class="tag-cat">{{ p.category_emoji }} {{ p.category_display }}</span>
+                        {% if p.verified %}<span class="badge-v">✓ Vérifié</span>{% endif %}
+                        {% if p.portfolio_list|length > 0 %}
+                        <span class="card-portfolio-pill">📸 {{ p.portfolio_list|length }} réalisations</span>
+                        {% endif %}
+                    </div>
+                </a>
+
                 <div class="card-body">
-                    <div class="card-name">{{ p.name }}</div>
+                    <a href="/prestataire/{{ p.id }}" style="text-decoration:none;color:inherit;">
+                        <div class="card-name">{{ p.name }}</div>
+                    </a>
+                    
                     <div class="card-stars">
                         <span class="stars">
                             {% for i in range(5) %}{% if i < p.stars_full %}★{% else %}☆{% endif %}{% endfor %}
                         </span>
                         <span class="stars-count">
-                            {% if p.review_count > 0 %}{{ p.avg_rating }}/5 ({{ p.review_count }} avis){% else %}Pas encore d'avis{% endif %}
+                            {% if p.review_count > 0 %}{{ p.avg_rating }}/5 ({{ p.review_count }} avis){% else %}Nouveau prestataire{% endif %}
                         </span>
                     </div>
+
+                    <!-- Événements pris en charge -->
+                    <div class="card-events">
+                        {% for ev in p.event_types_list %}
+                        <span class="event-badge-sm">{{ ev.badge }}</span>
+                        {% endfor %}
+                    </div>
+
                     <div class="card-price">{{ p.price_label }}</div>
                     <div class="card-loc">📍 {{ p.location }}</div>
+
+                    <!-- Aperçu des réalisations -->
+                    {% if p.portfolio_list|length > 0 %}
+                    <div class="portfolio-thumbs-row">
+                        {% for item in p.portfolio_list[:3] %}
+                        <div class="p-thumb" title="{{ item.title }}">
+                            <img src="{{ item.url }}" alt="{{ item.title }}" loading="lazy">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
                     <div class="card-actions">
-                        <span class="btn-profile">Voir le profil</span>
-                        <span class="btn-wa" onclick="event.preventDefault();wa('{{ p.name }}','{{ p.phone }}')">💬 Devis WhatsApp</span>
+                        <a href="/prestataire/{{ p.id }}" class="btn-profile">Voir réalisations</a>
+                        <button type="button" class="btn-wa-card" 
+                                onclick="openWhatsAppModal('{{ p.name }}', '{{ p.phone }}', '{{ p.category_display }}', '{{ p.image_url }}')">
+                            💬 Devis WhatsApp
+                        </button>
                     </div>
                 </div>
-            </a>
+            </div>
             {% else %}
             <div class="empty">
                 <span class="ico">🔍</span>
-                <p><strong>Aucun prestataire</strong> ne correspond à votre recherche.<br>Modifiez les filtres ou <a href="/inscription" style="color:var(--gold)">inscrivez votre entreprise</a>.</p>
+                <p><strong>Aucun prestataire</strong> ne correspond à ces critères.<br>Essayez de réinitialiser les filtres ou <a href="/inscription" style="color:var(--gold)">inscrivez votre entreprise</a>.</p>
             </div>
             {% endfor %}
         </div>
     </section>
 
+    <!-- Bannière pro -->
     <div class="cta-banner" id="cta">
         <div class="cta-inner">
-            <h2>Vous êtes un <span>professionnel de l'événement</span> ?</h2>
-            <p>Rejoignez l'annuaire et recevez des demandes de devis directement sur WhatsApp.<br><strong style="color:var(--emerald)">100% gratuit</strong> — Inscription en 2 minutes.</p>
-            <a href="/inscription" class="btn-cta">Inscrire mon entreprise →</a>
-            <div class="perks">
-                <div class="perk"><div class="dot"></div>Inscription gratuite</div>
-                <div class="perk"><div class="dot"></div>Profil personnalisé</div>
-                <div class="perk"><div class="dot"></div>Avis clients visibles</div>
-                <div class="perk"><div class="dot"></div>Contact WhatsApp direct</div>
+            <span class="pill" style="margin-bottom:12px">🚀 Espace Professionnels</span>
+            <h3>Vous êtes prestataire événementiel ?</h3>
+            <p>Rejoignez gratuitement Events Connect et recevez des demandes de devis qualifiées directement sur votre WhatsApp.</p>
+            <a href="/inscription" class="btn-inscri" style="font-size:1rem;padding:12px 26px">+ Inscrire mon entreprise gratuitement</a>
+            <div class="cta-perks">
+                <div class="perk"><div class="dot"></div>Fiche & Portfolio en ligne</div>
+                <div class="perk"><div class="dot"></div>Avis clients vérifiés</div>
+                <div class="perk"><div class="dot"></div>Détails complets de l'événement sur WhatsApp</div>
             </div>
         </div>
     </div>
 
 </main>
 
-<footer><p>© 2024 <strong>Events Connect</strong> — La plateforme des événements au Sénégal 🇸🇳</p></footer>
+<footer>
+    <p>© 2025 <strong>Events Connect</strong> — La référence des événements au Sénégal 🇸🇳</p>
+</footer>
+
+<!-- ======================================================== -->
+<!-- MODAL DE CONTACT WHATSAPP QUALIFIÉ                       -->
+<!-- ======================================================== -->
+<div class="modal-backdrop" id="waModal" onclick="handleBackdropClick(event)">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeWhatsAppModal()" aria-label="Fermer">✕</button>
+        
+        <div class="modal-header">
+            <div class="modal-avatar" id="mAvatar">
+                <img src="" id="mAvatarImg" alt="Prestataire">
+            </div>
+            <div>
+                <div class="modal-title" id="mProviderName">Studio Teranga</div>
+                <div class="modal-subtitle" id="mProviderCat">Photographe & Vidéaste</div>
+            </div>
+        </div>
+
+        <form class="modal-form" onsubmit="sendQualifiedWhatsApp(event)">
+            <input type="hidden" id="mPhone" value="">
+            
+            <div class="m-row">
+                <div class="m-field">
+                    <label for="mEventType">Type d'événement *</label>
+                    <select id="mEventType" required>
+                        <option value="Mariage 💍">Mariage 💍</option>
+                        <option value="Baptême 🕊️">Baptême 🕊️</option>
+                        <option value="Anniversaire 🎂">Anniversaire 🎂</option>
+                        <option value="Soirée & Gala 🍸">Soirée & Gala 🍸</option>
+                        <option value="Événement Pro 💼">Événement Pro 💼</option>
+                        <option value="Autre événement ✨">Autre événement ✨</option>
+                    </select>
+                </div>
+                <div class="m-field">
+                    <label for="mDate">Date de l'événement *</label>
+                    <input type="date" id="mDate" required>
+                </div>
+            </div>
+
+            <div class="m-row">
+                <div class="m-field">
+                    <label for="mLocation">Ville / Lieu de réception *</label>
+                    <input type="text" id="mLocation" placeholder="Ex: Almadies, Saly, Salle..." required>
+                </div>
+                <div class="m-field">
+                    <label for="mGuests">Nombre d'invités estimé</label>
+                    <select id="mGuests">
+                        <option value="Moins de 50 personnes">Moins de 50 personnes</option>
+                        <option value="50 à 100 personnes" selected>50 à 100 personnes</option>
+                        <option value="100 à 250 personnes">100 à 250 personnes</option>
+                        <option value="250 à 500 personnes">250 à 500 personnes</option>
+                        <option value="Plus de 500 personnes">Plus de 500 personnes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="m-field">
+                <label for="mBudget">Budget indicatif (Optionnel)</label>
+                <input type="text" id="mBudget" placeholder="Ex: 250 000 FCFA">
+            </div>
+
+            <div class="m-field">
+                <label for="mDetails">Précisions & Besoins particuliers</label>
+                <textarea id="mDetails" placeholder="Ex: Couverture complète de 15h à 23h, besoin de vidéo drone et d'un album photo prestige..."></textarea>
+            </div>
+
+            <div class="m-preview-box">
+                💡 <strong>Message WhatsApp instantané :</strong> Tous ces détails seront soigneusement formatés pour que le prestataire vous réponde avec un devis précis en quelques minutes.
+            </div>
+
+            <button type="submit" class="btn-submit-wa">
+                🚀 Envoyer ma demande sur WhatsApp
+            </button>
+        </form>
+    </div>
+</div>
 
 <script>
-function wa(name, phone) {
-    const msg = `Bonjour ${name} ! 👋\nJ'ai trouvé votre profil sur *Events Connect*.\nJe souhaite demander un devis pour un événement.\nÊtes-vous disponible ? 😊`;
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-}
+    // Configuration par défaut de la date à demain
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 14);
+    const dateInput = document.getElementById('mDate');
+    if (dateInput) {
+        dateInput.value = tomorrow.toISOString().split('T')[0];
+        dateInput.min = new Date().toISOString().split('T')[0];
+    }
+
+    // Pré-sélection du type d'événement selon le filtre actuel
+    const currentFilterEvent = "{{ sel_event_type }}";
+    if (currentFilterEvent && document.getElementById('mEventType')) {
+        const mapEvents = {
+            'mariage': 'Mariage 💍',
+            'bapteme': 'Baptême 🕊️',
+            'anniversaire': 'Anniversaire 🎂',
+            'soiree': 'Soirée & Gala 🍸',
+            'pro': 'Événement Pro 💼'
+        };
+        if (mapEvents[currentFilterEvent]) {
+            document.getElementById('mEventType').value = mapEvents[currentFilterEvent];
+        }
+    }
+
+    function openWhatsAppModal(name, phone, category, imageUrl) {
+        document.getElementById('mProviderName').textContent = name;
+        document.getElementById('mProviderCat').textContent = category;
+        document.getElementById('mPhone').value = phone;
+        
+        const avatarImg = document.getElementById('mAvatarImg');
+        if (imageUrl) {
+            avatarImg.src = imageUrl;
+            avatarImg.style.display = 'block';
+        } else {
+            avatarImg.style.display = 'none';
+        }
+
+        document.getElementById('waModal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeWhatsAppModal() {
+        document.getElementById('waModal').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function handleBackdropClick(e) {
+        if (e.target.id === 'waModal') {
+            closeWhatsAppModal();
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeWhatsAppModal();
+    });
+
+    function sendQualifiedWhatsApp(e) {
+        e.preventDefault();
+        const providerName = document.getElementById('mProviderName').textContent;
+        const phone = document.getElementById('mPhone').value;
+        const eventType = document.getElementById('mEventType').value;
+        const dateVal = document.getElementById('mDate').value;
+        const locationVal = document.getElementById('mLocation').value;
+        const guestsVal = document.getElementById('mGuests').value;
+        const budgetVal = document.getElementById('mBudget').value.trim();
+        const detailsVal = document.getElementById('mDetails').value.trim();
+
+        // Formatage de la date en français si possible
+        let dateFormatted = dateVal;
+        try {
+            const d = new Date(dateVal);
+            dateFormatted = d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+        } catch (err) {}
+
+        let msg = `Bonjour ${providerName} ! 👋\n`;
+        msg += `J'ai découvert votre profil et vos réalisations sur *Events Connect*.\n\n`;
+        msg += `Je souhaite obtenir un devis pour mon événement :\n`;
+        msg += `🎉 *Type d'événement* : ${eventType}\n`;
+        msg += `📅 *Date prévue* : ${dateFormatted}\n`;
+        msg += `📍 *Lieu / Ville* : ${locationVal}\n`;
+        msg += `👥 *Nombre d'invités* : ~${guestsVal}\n`;
+        if (budgetVal) {
+            msg += `💰 *Budget indicatif* : ${budgetVal}\n`;
+        }
+        if (detailsVal) {
+            msg += `📝 *Précisions* : ${detailsVal}\n`;
+        }
+        msg += `\nÊtes-vous disponible à cette date pour échanger ? Merci beaucoup ! 😊`;
+
+        const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+        window.open(waUrl, '_blank');
+        closeWhatsAppModal();
+    }
 </script>
+
 </body>
 </html>
