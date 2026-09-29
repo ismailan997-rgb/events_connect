@@ -181,7 +181,7 @@ def init_db():
         if 'password' not in cols:
             conn.execute("ALTER TABLE providers ADD COLUMN password TEXT NOT NULL DEFAULT ''")
 
-        rows = conn.execute('SELECT id FROM providers WHERE dashboard_token IS NULL OR dashboard_token = ""').fetchall()
+        rows = conn.execute("SELECT id FROM providers WHERE dashboard_token IS NULL OR dashboard_token = ''").fetchall()
         for row in rows:
             conn.execute(
                 'UPDATE providers SET dashboard_token = ? WHERE id = ?',
