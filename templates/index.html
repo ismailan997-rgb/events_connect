@@ -218,9 +218,9 @@
         </div>
 
         <div class="stats">
-            <div class="stat"><div class="stat-n">{{ providers|length }}</div><div class="stat-l">Prestataires trouvés</div></div>
-            <div class="stat"><div class="stat-n">4.9★</div><div class="stat-l">Note d'excellence</div></div>
-            <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Mise en relation directe</div></div>
+            <div class="stat"><div class="stat-n">{% if providers|length > 0 %}{{ providers|length }}{% else %}Lancement 🚀{% endif %}</div><div class="stat-l">{% if providers|length > 0 %}Prestataires trouvés{% else %}Nouveaux profils en cours{% endif %}</div></div>
+            <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Gratuit pros & organisateurs</div></div>
+            <div class="stat"><div class="stat-n">Direct ⚡</div><div class="stat-l">Mise en relation WhatsApp</div></div>
         </div>
     </section>
 
@@ -330,8 +330,14 @@
             </div>
             {% else %}
             <div class="empty">
-                <span class="ico">🔍</span>
-                <p><strong>Aucun prestataire</strong> ne correspond à ces critères.<br>Essayez de réinitialiser les filtres ou <a href="/inscription" style="color:var(--gold)">inscrivez votre entreprise</a>.</p>
+                <span class="ico">✨</span>
+                {% if sel_category or sel_city or sel_event_type or sel_max_price %}
+                <p><strong>Aucun prestataire</strong> ne correspond à ces critères.<br><a href="/" style="color:var(--gold-l);text-decoration:underline;">Réinitialiser les filtres</a> ou <a href="/inscription" style="color:var(--gold)">inscrire votre entreprise</a>.</p>
+                {% else %}
+                <h3 style="font-size:1.3rem;font-weight:800;margin-bottom:8px;color:#fff;">Bienvenue sur Events Connect ! 🎉</h3>
+                <p style="max-width:540px;margin:0 auto 20px;color:var(--t2);">La plateforme vient d'ouvrir ses portes. Vous êtes photographe, DJ, traiteur, décorateur ou animateur ?<br><strong>Soyez le premier à inscrire votre entreprise</strong> et recevez vos premiers devis d'événements sur WhatsApp !</p>
+                <a href="/inscription" class="btn-inscri" style="font-size:.95rem;padding:12px 24px;">+ Inscrire mon entreprise gratuitement</a>
+                {% endif %}
             </div>
             {% endfor %}
         </div>
