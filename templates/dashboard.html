@@ -68,7 +68,11 @@
             <h1>{{ provider.name }}</h1>
             <p style="color:var(--t2);margin:0;">Gérez facilement votre annonce et supprimez-la en un clic si besoin.</p>
             <div class="btn-row">
+                {% if provider.verified %}
                 <a href="{{ provider.public_url }}" class="primary" target="_blank" rel="noopener">Voir l’annonce publique</a>
+                {% else %}
+                <span class="secondary">Annonce en attente de vérification</span>
+                {% endif %}
             </div>
         </div>
     </section>
@@ -90,6 +94,7 @@
             <div class="danger-box">
                 Cette action est définitive. Votre profil sera retiré de l’annuaire et les demandes sur WhatsApp ne seront plus visibles.
                 <form method="POST" action="/dashboard/{{ provider.dashboard_token }}/delete" onsubmit="return confirm('Voulez-vous vraiment supprimer votre annonce ?')">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" name="confirm" value="SUPPRIMER" class="danger-btn">Supprimer mon annonce</button>
                 </form>
             </div>

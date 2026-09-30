@@ -268,9 +268,6 @@
                 <button class="btn-wa-big" onclick="openWhatsAppModal()" id="contact-wa-btn">
                     💬 Demander un devis sur WhatsApp
                 </button>
-                {% if provider.dashboard_url %}
-                <a class="btn-share" href="{{ provider.dashboard_url }}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">🛠️ Gérer mon annonce</a>
-                {% endif %}
                 <button class="btn-share" onclick="share()" id="share-btn" title="Partager">🔗 Partager</button>
             </div>
         </div>
@@ -352,8 +349,11 @@
 
         <!-- Add review form -->
         <div class="review-form-wrap">
-            <div class="review-form-title">✍️ Laisser un avis client</div>
+            <div class="review-form-title">✍️ Proposer un avis</div>
+            {% if review_submitted %}<p class="review-comment" role="status" style="margin-bottom:14px">Merci. Votre avis est en attente de modération et n’est pas encore visible publiquement.</p>{% endif %}
+            <p class="review-comment" style="margin-bottom:14px">Chaque avis est vérifié par l’équipe avant sa publication. N’envoyez pas d’informations personnelles dans votre commentaire.</p>
             <form action="/prestataire/{{ provider.id }}/avis" method="POST" id="review-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-row">
                     <label>Votre note *</label>
                     <div class="star-picker" id="star-picker" role="group" aria-label="Note de 1 à 5 étoiles">
@@ -383,6 +383,10 @@
     </div>
 
 </main>
+
+<footer style="position:relative;z-index:1;text-align:center;padding:24px;color:var(--t2);border-top:1px solid var(--border);">
+    <a href="/mentions-legales">Mentions légales</a> · <a href="/confidentialite">Confidentialité</a> · <a href="/conditions">Conditions</a> · <a href="/contact">Contact</a>
+</footer>
 
 <!-- ======================================================== -->
 <!-- LIGHTBOX PLEIN ÉCRAN POUR LES RÉALISATIONS               -->
@@ -561,8 +565,8 @@ document.addEventListener('keydown', function(e) {
 
 function sendQualifiedWhatsApp(e) {
     e.preventDefault();
-    const providerName = "{{ provider.name }}";
-    const phone = "{{ provider.phone }}";
+    const providerName = {{ provider.name | tojson }};
+    const phone = {{ provider.phone | tojson }};
     const eventType = document.getElementById('mEventType').value;
     const dateVal = document.getElementById('mDate').value;
     const locationVal = document.getElementById('mLocation').value;
@@ -598,7 +602,7 @@ function sendQualifiedWhatsApp(e) {
 // ---- Share ----
 function share() {
     if (navigator.share) {
-        navigator.share({ title: '{{ provider.name }} — Events Connect', url: window.location.href });
+        navigator.share({ title: {{ provider.name | tojson }} + ' — Events Connect', url: window.location.href });
     } else {
         navigator.clipboard.writeText(window.location.href).then(() => alert('Lien copié dans le presse-papiers !'));
     }
@@ -606,9 +610,9 @@ function share() {
 
 // ---- Leaflet Map ----
 (function() {
-    const location = '{{ provider.location }}, {{ provider.city }}, Sénégal';
-    const providerName = '{{ provider.name }}';
-    const catEmoji = '{{ provider.category_emoji }}';
+    const location = {{ (provider.location ~ ', ' ~ provider.city ~ ', Sénégal') | tojson }};
+    const providerName = {{ provider.name | tojson }};
+    const catEmoji = {{ provider.category_emoji | tojson }};
 
     const map = L.map('map', { zoomControl: true, scrollWheelZoom: false }).setView([14.6928, -17.4467], 12);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {

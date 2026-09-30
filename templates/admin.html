@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration — Events Connect</title>
+    <style>
+        :root{color-scheme:dark;--bg:#101614;--panel:#1a2420;--line:#34443b;--text:#f2f4ed;--muted:#aeb8af;--accent:#e8b84c;--ok:#73d6a1;--bad:#f28e83}
+        *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,sans-serif}
+        header{padding:18px max(24px,calc((100% - 1080px)/2));border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+        main{max-width:1080px;margin:38px auto;padding:0 24px}h1,h2{line-height:1.2}h1{font-size:2rem}h2{font-size:1.3rem;margin:0 0 12px}
+        p,.muted{color:var(--muted)}a{color:var(--accent)}section{border-top:1px solid var(--line);padding:24px 0}
+        .entry{padding:18px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center}
+        .actions{display:flex;gap:8px;flex-wrap:wrap}button{border:1px solid var(--line);background:#25332b;color:var(--text);padding:9px 13px;border-radius:6px;font:inherit;cursor:pointer}
+        button.approve{background:#244b37;border-color:#397657}button.reject{background:#4b2927;border-color:#74413b}.error{color:var(--bad)}.empty{padding:12px 0;color:var(--muted)}
+        form.inline{display:inline}input[type=password]{width:min(360px,100%);padding:12px;border:1px solid var(--line);background:#111a15;color:white;border-radius:6px}
+        @media(max-width:650px){.entry{grid-template-columns:1fr}.actions{justify-content:flex-start}header{padding:16px 20px}main{margin:24px auto}}
+    </style>
+</head>
+<body>
+<header>
+    <strong>Events Connect · Administration</strong>
+    {% if session.get('is_admin') %}
+    <form class="inline" method="post" action="/admin/logout"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit">Déconnexion</button></form>
+    {% else %}<a href="/">Retour au site</a>{% endif %}
+</header>
+<main>
+    {% if setup_required %}
+    <h1>Administration non configurée</h1>
+    <p>Définissez ADMIN_PASSWORD_HASH dans les variables d’environnement du déploiement pour activer la modération.</p>
+    {% elif not session.get('is_admin') %}
+    <h1>Connexion administrateur</h1>
+    <p>Accès réservé à l’équipe Events Connect.</p>
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    <form method="post" action="/admin">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="admin-password">Mot de passe administrateur</label><br><br>
+        <input id="admin-password" type="password" name="password" autocomplete="current-password" required maxlength="256">
+        <button type="submit">Se connecter</button>
+    </form>
+    {% else %}
+    <h1>Modération</h1>
+    <p>Vérifiez les coordonnées avec le prestataire avant d’attribuer le badge. Pour les avis, ne publiez qu’après avoir contrôlé qu’une prestation a bien eu lieu.</p>
+
+    <section>
+        <h2>Prestataires à vérifier ({{ providers|length }})</h2>
+        {% for provider in providers %}
+        <article class="entry">
+            <div><strong>{{ provider.name }}</strong><div class="muted">{{ provider.category }} · {{ provider.city }} · +{{ provider.phone }}</div><div class="muted">Inscrit le {{ provider.created_at[:10] }}</div></div>
+            <form method="post" action="/admin/provider/{{ provider.id }}/verification">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="verified" value="1">
+                <button class="approve" type="submit">Confirmer et vérifier</button>
+            </form>
+        </article>
+        {% else %}<p class="empty">Aucun prestataire en attente.</p>{% endfor %}
+    </section>
+
+    <section>
+        <h2>Prestataires vérifiés ({{ verified_providers|length }})</h2>
+        {% for provider in verified_providers %}
+        <article class="entry">
+            <div><strong>{{ provider.name }}</strong><div class="muted">{{ provider.category }} · {{ provider.city }}</div></div>
+            <form method="post" action="/admin/provider/{{ provider.id }}/verification">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="verified" value="0">
+                <button class="reject" type="submit">Retirer le badge</button>
+            </form>
+        </article>
+        {% else %}<p class="empty">Aucun badge actif.</p>{% endfor %}
+    </section>
+
+    <section>
+        <h2>Avis en attente ({{ pending_reviews|length }})</h2>
+        {% for review in pending_reviews %}
+        <article class="entry">
+            <div><strong>{{ review.provider_name }}</strong><div>{{ review.author }} · {{ review.rating }}/5 · {{ review.created_at[:10] }}</div><p>{{ review.comment or 'Aucun commentaire.' }}</p></div>
+            <div class="actions">
+                <form method="post" action="/admin/review/{{ review.id }}/approve"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="approve" type="submit">Publier</button></form>
+                <form method="post" action="/admin/review/{{ review.id }}/reject"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="reject" type="submit">Refuser</button></form>
+            </div>
+        </article>
+        {% else %}<p class="empty">Aucun avis en attente.</p>{% endfor %}
+    </section>
+    {% endif %}
+</main>
+</body>
+</html>

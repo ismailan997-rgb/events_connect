@@ -130,6 +130,7 @@
     {% endif %}
 
     <form class="form-card" action="/inscription" method="POST" id="inscription-form" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
         <!-- Métier -->
         <div class="section-label">🎭 Votre métier principal <span class="req">*</span></div>
@@ -167,17 +168,17 @@
             </div>
             <div class="fg">
                 <label for="phone-in">Numéro WhatsApp Pro <span class="req">*</span></label>
-                <input type="tel" id="phone-in" name="phone" placeholder="Ex: 221771234567" required maxlength="20">
+                <input type="tel" id="phone-in" name="phone" placeholder="Ex: 221771234567" required pattern="[0-9+ ]{8,18}" maxlength="18" autocomplete="tel">
                 <span class="hint">Format international sans le + (ex: 221771234567)</span>
             </div>
             <div class="fg">
                 <label for="password-in">Mot de passe du dashboard <span class="req">*</span></label>
-                <input type="password" id="password-in" name="password" placeholder="Choisissez un mot de passe" required maxlength="50">
+                <input type="password" id="password-in" name="password" placeholder="Choisissez un mot de passe" required minlength="12" maxlength="128" autocomplete="new-password">
                 <span class="hint">Utilisez-le avec votre numéro WhatsApp pour ouvrir le dashboard</span>
             </div>
             <div class="fg">
                 <label for="confirm-password-in">Confirmer le mot de passe <span class="req">*</span></label>
-                <input type="password" id="confirm-password-in" name="confirm_password" placeholder="Réécrivez le mot de passe" required maxlength="50">
+                <input type="password" id="confirm-password-in" name="confirm_password" placeholder="Réécrivez le mot de passe" required minlength="12" maxlength="128" autocomplete="new-password">
             </div>
             <div class="fg">
                 <label for="city-in">Ville principale <span class="req">*</span></label>
@@ -222,7 +223,7 @@
             <div class="fg">
                 <label for="image-in">Photo de profil / Couverture</label>
                 <input type="file" id="image-in" name="image" accept="image/*" onchange="previewFileInput(this, 'img-preview')">
-                <span class="hint">Téléchargez une image JPG/PNG depuis votre ordinateur</span>
+                <span class="hint">JPG, PNG ou WebP, 8 Mo maximum</span>
                 <div class="img-preview" id="img-preview">📷 Aperçu de la photo</div>
             </div>
             <div class="fg">
@@ -235,7 +236,10 @@
 
         <!-- Submit -->
         <div class="submit-row">
-            <p class="submit-note">En vous inscrivant, vous recevrez directement les demandes d'organisateurs avec tous les détails de leur fête sur WhatsApp.</p>
+            <div class="submit-note">
+                <label><input type="checkbox" name="consent" value="yes" required> J’accepte les <a href="/conditions" target="_blank" rel="noopener">conditions d’utilisation</a> et confirme avoir lu la <a href="/confidentialite" target="_blank" rel="noopener">politique de confidentialité</a>.</label>
+                <p>Votre numéro et votre annonce seront visibles publiquement pour permettre le contact direct.</p>
+            </div>
             <button type="submit" class="btn-submit" id="submit-inscription-btn">
                 Créer mon profil gratuitement →
             </button>
@@ -246,11 +250,15 @@
     <div class="perks-row">
         <div class="perk"><div class="dot"></div>Inscription 100% gratuite</div>
         <div class="perk"><div class="dot"></div>Profil & Portfolio immédiats</div>
-        <div class="perk"><div class="dot"></div>Avis clients vérifiés</div>
+        <div class="perk"><div class="dot"></div>Avis modérés avant publication</div>
         <div class="perk"><div class="dot"></div>Messages WhatsApp complets</div>
     </div>
 
 </main>
+
+<footer style="position:relative;z-index:1;text-align:center;padding:24px;color:var(--t2);border-top:1px solid var(--border);">
+    <a href="/mentions-legales">Mentions légales</a> · <a href="/confidentialite">Confidentialité</a> · <a href="/conditions">Conditions</a> · <a href="/contact">Contact</a>
+</footer>
 
 <script>
 function previewFileInput(input, previewId) {

@@ -3,12 +3,14 @@ services:
     name: events-connect
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    startCommand: gunicorn --workers 1 app:app
     plan: free
     autoDeploy: true
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
+      - key: APP_ENV
+        value: production
       - key: SECRET_KEY
         generateValue: true
       - key: CLOUDINARY_CLOUD_NAME
@@ -18,4 +20,20 @@ services:
       - key: CLOUDINARY_API_SECRET
         sync: false
       - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: SUPPORT_EMAIL
+        sync: false
+      - key: SUPPORT_WHATSAPP
+        sync: false
+      - key: LEGAL_OPERATOR_NAME
+        sync: false
+      - key: LEGAL_OPERATOR_ADDRESS
+        sync: false
+      - key: LEGAL_OPERATOR_REGISTRATION
+        sync: false
+      - key: HOSTING_PROVIDER
+        sync: false
+      - key: RATELIMIT_STORAGE_URI
         sync: false

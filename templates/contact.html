@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — Events Connect</title>
+    <style>body{margin:0;background:#101614;color:#f2f4ed;font:16px/1.7 system-ui,sans-serif}.wrap{max-width:720px;margin:48px auto;padding:0 24px}p{color:#c1cbc2}a{color:#e8b84c}header{border-bottom:1px solid #34443b;padding:18px max(24px,calc((100% - 720px)/2))}.contact{padding:18px 0;border-bottom:1px solid #34443b}</style>
+</head>
+<body><header><a href="/">Events Connect</a></header><main class="wrap">
+    <h1>Nous contacter</h1>
+    <p>Pour une question, un signalement ou une demande de modification/suppression de données :</p>
+    {% if support_email %}<p class="contact"><strong>E-mail</strong><br><a href="mailto:{{ support_email }}">{{ support_email }}</a></p>{% endif %}
+    {% if support_whatsapp %}<p class="contact"><strong>WhatsApp</strong><br><a href="https://wa.me/{{ support_whatsapp }}">Écrire au +{{ support_whatsapp }}</a></p>{% endif %}
+    {% if not support_email and not support_whatsapp %}<p class="contact">Les coordonnées de contact doivent être configurées avant le lancement public.</p>{% endif %}
+    <p><a href="/mentions-legales">Mentions légales</a> · <a href="/confidentialite">Confidentialité</a> · <a href="/conditions">Conditions</a></p>
+</main></body></html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentions légales — Events Connect</title>
+    <style>body{margin:0;background:#101614;color:#f2f4ed;font:16px/1.7 system-ui,sans-serif}.wrap{max-width:820px;margin:48px auto;padding:0 24px}h1,h2{line-height:1.25}p{color:#c1cbc2}a{color:#e8b84c}header{border-bottom:1px solid #34443b;padding:18px max(24px,calc((100% - 820px)/2))}</style>
+</head>
+<body><header><a href="/">Events Connect</a></header><main class="wrap">
+    <h1>Mentions légales</h1>
+    <p><strong>Éditeur :</strong> {{ legal_operator_name or 'Identité de l’exploitant à renseigner avant lancement public.' }}</p>
+    <p><strong>Adresse :</strong> {{ legal_operator_address or 'Adresse à renseigner.' }}</p>
+    {% if legal_operator_registration %}<p><strong>Immatriculation :</strong> {{ legal_operator_registration }}</p>{% endif %}
+    <p><strong>Contact :</strong> {% if support_email %}<a href="mailto:{{ support_email }}">{{ support_email }}</a>{% endif %}{% if support_email and support_whatsapp %} · {% endif %}{% if support_whatsapp %}<a href="https://wa.me/{{ support_whatsapp }}">WhatsApp +{{ support_whatsapp }}</a>{% endif %}{% if not support_email and not support_whatsapp %}À configurer avant le lancement public.{% endif %}</p>
+    <p><strong>Hébergement :</strong> {{ hosting_provider or 'Hébergeur à renseigner.' }}</p>
+    <p>Avant diffusion publique, complétez les informations d’immatriculation applicables et les coordonnées exactes de l’hébergeur. Faites vérifier ces mentions selon les obligations en vigueur au Sénégal.</p>
+</main></body></html>

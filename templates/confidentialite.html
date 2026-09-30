@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confidentialité — Events Connect</title>
+    <style>body{margin:0;background:#101614;color:#f2f4ed;font:16px/1.7 system-ui,sans-serif}.wrap{max-width:820px;margin:48px auto;padding:0 24px}h1,h2{line-height:1.25}h2{margin-top:30px}p,li{color:#c1cbc2}a{color:#e8b84c}header{border-bottom:1px solid #34443b;padding:18px max(24px,calc((100% - 820px)/2))}</style>
+</head>
+<body><header><a href="/">Events Connect</a></header><main class="wrap">
+    <h1>Politique de confidentialité</h1>
+    <p>Cette page explique les données utilisées par Events Connect pour publier un annuaire de prestataires événementiels et permettre une mise en relation directe.</p>
+    <h2>Responsable et contact</h2>
+    <p>Responsable du service : {{ legal_operator_name or 'Events Connect' }}. Pour une question ou une demande relative à vos données, contactez-nous à {% if support_email %}<a href="mailto:{{ support_email }}">{{ support_email }}</a>{% elif support_whatsapp %}<a href="https://wa.me/{{ support_whatsapp }}">WhatsApp +{{ support_whatsapp }}</a>{% else %}l’adresse qui sera configurée sur la page <a href="/contact">Contact</a>{% endif %}.</p>
+    <h2>Données utilisées</h2>
+    <ul><li>Pour une annonce : nom professionnel, catégorie, ville, zone, numéro WhatsApp, tarifs, description et photos.</li><li>Pour le compte prestataire : numéro de connexion et empreinte cryptographique du mot de passe; le mot de passe n’est pas conservé en clair.</li><li>Pour un avis : nom affiché, note et commentaire soumis à modération.</li><li>Des données techniques peuvent être traitées par l’hébergeur pour assurer la sécurité et le fonctionnement du service.</li></ul>
+    <h2>Utilisation et visibilité</h2>
+    <p>Les informations d’annonce, notamment le numéro WhatsApp, sont publiées afin que les visiteurs puissent contacter le prestataire. Les demandes de devis sont préparées dans le navigateur et envoyées directement par WhatsApp; Events Connect ne reçoit pas leur contenu via son serveur.</p>
+    <p>Les photos sont transmises au service de stockage d’images configuré par l’exploitant, et les données de compte à l’hébergeur et à la base de données configurés. Ces prestataires peuvent traiter des données hors du Sénégal selon la configuration retenue. L’exploitant doit vérifier les conditions et obligations applicables avant le lancement.</p>
+    <h2>Durée et demandes</h2>
+    <p>Les annonces et avis sont conservés tant qu’ils sont utiles au service ou jusqu’à leur suppression. Un prestataire peut supprimer son annonce depuis son espace. Pour demander l’accès, la correction ou la suppression d’autres données, utilisez la page <a href="/contact">Contact</a>.</p>
+    <h2>Vos précautions</h2>
+    <p>Ne publiez pas de données sensibles dans une annonce ou un avis. Les visiteurs contactent les prestataires directement; vérifiez leur identité, les références et les conditions avant tout paiement ou engagement.</p>
+    <p>Cette politique doit être complétée et validée par l’exploitant selon son identité juridique, ses fournisseurs et les règles applicables au Sénégal, notamment les formalités éventuelles auprès de l’autorité compétente.</p>
+</main></body></html>

@@ -6,7 +6,7 @@
     <title>Events Connect — Prestataires événementiels au Sénégal 🇸🇳</title>
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <link rel="alternate icon" href="/static/favicon.svg">
-    <meta name="description" content="Trouvez photographes, DJs, traiteurs et décorateurs vérifiés pour vos mariages, baptêmes, anniversaires et soirées au Sénégal.">
+    <meta name="description" content="Trouvez des photographes, DJs, traiteurs et décorateurs pour vos événements au Sénégal. Contact direct sur WhatsApp.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -206,9 +206,9 @@
 <main class="wrap">
 
     <section class="hero">
-        <div class="pill">✨ La plateforme #1 des événements au Sénégal</div>
+        <div class="pill">✨ Annuaire de prestataires événementiels au Sénégal</div>
         <h1>Trouvez vos<br><span class="grad">prestataires d'exception</span></h1>
-        <p class="hero-sub">Photographes, DJs, Traiteurs & Décorateurs certifiés pour vos mariages, baptêmes, anniversaires et soirées. Contact direct sur WhatsApp.</p>
+        <p class="hero-sub">Photographes, DJs, traiteurs et décorateurs pour vos mariages, baptêmes, anniversaires et soirées. Contact direct sur WhatsApp.</p>
         
         <!-- Filtres rapides par événement -->
         <div class="event-pills-bar">
@@ -325,8 +325,8 @@
 
                     <div class="card-actions">
                         <a href="/prestataire/{{ p.id }}" class="btn-profile">Voir réalisations</a>
-                        <button type="button" class="btn-wa-card" 
-                                onclick="openWhatsAppModal('{{ p.name }}', '{{ p.phone }}', '{{ p.category_display }}', '{{ p.image_url }}')">
+                        <button type="button" class="btn-wa-card" data-provider-name="{{ p.name }}" data-provider-phone="{{ p.phone }}" data-provider-category="{{ p.category_display }}" data-provider-image="{{ p.image_url }}"
+                            onclick="openWhatsAppModal(this.dataset.providerName, this.dataset.providerPhone, this.dataset.providerCategory, this.dataset.providerImage)">
                             💬 Devis WhatsApp
                         </button>
                     </div>
@@ -356,7 +356,7 @@
             <a href="/inscription" class="btn-inscri" style="font-size:1rem;padding:12px 26px">+ Inscrire mon entreprise gratuitement</a>
             <div class="cta-perks">
                 <div class="perk"><div class="dot"></div>Fiche & Portfolio en ligne</div>
-                <div class="perk"><div class="dot"></div>Avis clients vérifiés</div>
+                <div class="perk"><div class="dot"></div>Avis modérés avant publication</div>
                 <div class="perk"><div class="dot"></div>Détails complets de l'événement sur WhatsApp</div>
             </div>
         </div>
@@ -365,7 +365,8 @@
 </main>
 
 <footer>
-    <p>© 2025 <strong>Events Connect</strong> — La référence des événements au Sénégal 🇸🇳</p>
+    <p>© 2026 <strong>Events Connect</strong> — Prestataires événementiels au Sénégal</p>
+    <p><a href="/mentions-legales">Mentions légales</a> · <a href="/confidentialite">Confidentialité</a> · <a href="/conditions">Conditions</a> · <a href="/contact">Contact</a></p>
 </footer>
 
 <!-- ======================================================== -->
@@ -455,7 +456,7 @@
     }
 
     // Pré-sélection du type d'événement selon le filtre actuel
-    const currentFilterEvent = "{{ sel_event_type }}";
+    const currentFilterEvent = {{ sel_event_type | tojson }};
     if (currentFilterEvent && document.getElementById('mEventType')) {
         const mapEvents = {
             'mariage': 'Mariage 💍',

@@ -34,6 +34,7 @@
         {% endif %}
 
         <form method="POST" action="/dashboard-access">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <label for="phone">Numéro WhatsApp</label>
             <input id="phone" name="phone" type="tel" placeholder="Ex: 221771234567" required>
 
