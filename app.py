@@ -44,14 +44,19 @@ DATABASE_URL = os.environ.get('DATABASE_URL', '').strip()
 if IS_PRODUCTION and not DATABASE_URL:
     raise RuntimeError('DATABASE_URL doit pointer vers une base persistante en production.')
 ADMIN_PASSWORD_HASH = os.environ.get('ADMIN_PASSWORD_HASH', '')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '')
 if IS_PRODUCTION:
     required_settings = [
         'CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET',
-        'ADMIN_PASSWORD_HASH', 'LEGAL_OPERATOR_NAME', 'LEGAL_OPERATOR_ADDRESS', 'HOSTING_PROVIDER',
+        'LEGAL_OPERATOR_NAME', 'LEGAL_OPERATOR_ADDRESS', 'HOSTING_PROVIDER',
     ]
     missing_settings = [key for key in required_settings if not os.environ.get(key)]
     if missing_settings:
         raise RuntimeError('Variables de production manquantes : ' + ', '.join(missing_settings))
+    if not ADMIN_PASSWORD and not ADMIN_PASSWORD_HASH:
+        raise RuntimeError('Configurez ADMIN_PASSWORD ou ADMIN_PASSWORD_HASH pour protéger /admin.')
+    if ADMIN_PASSWORD and len(ADMIN_PASSWORD) < 16:
+        raise RuntimeError('ADMIN_PASSWORD doit contenir au moins 16 caractères.')
     if not (os.environ.get('SUPPORT_EMAIL') or os.environ.get('SUPPORT_WHATSAPP')):
         raise RuntimeError('Configurez au moins SUPPORT_EMAIL ou SUPPORT_WHATSAPP en production.')
 
@@ -564,15 +569,18 @@ def admin_required(view):
 @limiter.limit('5 per 15 minutes', methods=['POST'])
 def admin():
     error = None
-    if not ADMIN_PASSWORD_HASH:
+    if not ADMIN_PASSWORD and not ADMIN_PASSWORD_HASH:
         return render_template('admin.html', setup_required=True), 503
 
     if request.method == 'POST':
         password = request.form.get('password', '')
-        try:
-            authenticated = check_password_hash(ADMIN_PASSWORD_HASH, password)
-        except ValueError:
-            authenticated = False
+        if ADMIN_PASSWORD:
+            authenticated = secrets.compare_digest(password, ADMIN_PASSWORD)
+        else:
+            try:
+                authenticated = check_password_hash(ADMIN_PASSWORD_HASH, password)
+            except ValueError:
+                authenticated = False
         if authenticated:
             session.clear()
             session['is_admin'] = True

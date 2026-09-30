@@ -19,9 +19,11 @@ class EventsConnectTests(unittest.TestCase):
         app_module.app.config['WTF_CSRF_ENABLED'] = False
         app_module.app.config['RATELIMIT_ENABLED'] = False
         self.previous_admin_hash = app_module.ADMIN_PASSWORD_HASH
+        self.previous_admin_password = app_module.ADMIN_PASSWORD
 
     def tearDown(self):
         app_module.ADMIN_PASSWORD_HASH = self.previous_admin_hash
+        app_module.ADMIN_PASSWORD = self.previous_admin_password
         try:
             os.unlink(self.tmp_db.name)
         except FileNotFoundError:
@@ -60,6 +62,20 @@ class EventsConnectTests(unittest.TestCase):
         ).fetchone()
         db.close()
         self.assertIsNone(provider)
+
+    def test_admin_accepts_direct_environment_password(self):
+        app_module.ADMIN_PASSWORD_HASH = ''
+        app_module.ADMIN_PASSWORD = 'un mot de passe admin long'
+        client = app_module.app.test_client()
+
+        wrong_password = client.post('/admin', data={'password': 'mot de passe incorrect'})
+        self.assertEqual(wrong_password.status_code, 200)
+        self.assertIn('Mot de passe incorrect', wrong_password.get_data(as_text=True))
+
+        correct_password = client.post('/admin', data={'password': 'un mot de passe admin long'})
+        self.assertEqual(correct_password.status_code, 302)
+        with client.session_transaction() as admin_session:
+            self.assertTrue(admin_session.get('is_admin'))
 
     def test_existing_plaintext_password_is_migrated(self):
         db = app_module.get_db()

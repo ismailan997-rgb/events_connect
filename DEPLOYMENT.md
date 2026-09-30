@@ -7,19 +7,20 @@ Le démarrage en production échoue volontairement si une configuration indispen
 - `SECRET_KEY` : secret aléatoire propre à la production.
 - `DATABASE_URL` : URL d’une base PostgreSQL persistante. Ne pas utiliser SQLite sur le disque temporaire de Vercel ou Render.
 - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` : nouveau jeu de clés Cloudinary.
-- `ADMIN_PASSWORD_HASH` : empreinte du mot de passe administrateur, jamais le mot de passe en clair.
+- `ADMIN_PASSWORD` : mot de passe administrateur (au moins 16 caractères), à saisir comme secret privé dans Render. Cette option est la plus simple; elle est comparée en temps constant et n’est jamais écrite en base ni dans les journaux.
+- `ADMIN_PASSWORD_HASH` : alternative si vous préférez stocker une empreinte. Si `ADMIN_PASSWORD` est défini, il est prioritaire.
 - `SUPPORT_EMAIL` ou `SUPPORT_WHATSAPP` : au moins un moyen de contact public. WhatsApp doit être au format international, chiffres uniquement.
 - `LEGAL_OPERATOR_NAME`, `LEGAL_OPERATOR_ADDRESS`, `HOSTING_PROVIDER` : informations exactes de l’exploitant et de l’hébergeur.
 - `LEGAL_OPERATOR_REGISTRATION` : identifiant d’immatriculation applicable, si requis.
 - `RATELIMIT_STORAGE_URI` : facultatif pour le pilote à un worker; configurer un stockage Redis partagé avant d’augmenter le nombre de workers ou d’instances.
 
-Générez l’empreinte administrateur localement avec une invite masquée, puis copiez uniquement le résultat dans le gestionnaire de secrets de l’hébergeur :
+Si vous utilisez `ADMIN_PASSWORD_HASH`, générez l’empreinte localement avec une invite masquée, puis copiez uniquement le résultat dans le gestionnaire de secrets de l’hébergeur :
 
 ```powershell
 python -c "from getpass import getpass; from werkzeug.security import generate_password_hash; print(generate_password_hash(getpass('Mot de passe admin: ')))"
 ```
 
-Ne mettez jamais de valeur secrète dans Git ou dans une commande conservée dans l’historique du terminal.
+Ne mettez jamais de valeur secrète dans Git ou dans une commande conservée dans l’historique du terminal. Configurez une seule des deux variables admin pour éviter toute ambiguïté.
 
 ## Avant le premier déploiement
 
