@@ -98,6 +98,13 @@ CATEGORIES = {
     'decorateur':  {'label': 'Décorateur & Scénographie', 'emoji': '🌸'},
     'animateur':   {'label': 'Animateur & MC',            'emoji': '🎤'},
     'makeup':      {'label': 'Maquillage & Coiffure',     'emoji': '💄'},
+    'pianiste':    {'label': 'Pianiste, Musicien & Griot', 'emoji': '🎹'},
+    'fleuriste':   {'label': 'Fleuriste & Art floral',     'emoji': '💐'},
+    'location':    {'label': 'Location de matériel & Tentes', 'emoji': '⛺'},
+    'salle':       {'label': 'Salle & Espace de réception', 'emoji': '🏛️'},
+    'organisateur': {'label': 'Wedding planner & Coordination', 'emoji': '📋'},
+    'styliste':    {'label': 'Tenues & Stylisme',          'emoji': '👗'},
+    'transport':   {'label': 'Transport & Chauffeur',     'emoji': '🚘'},
 }
 
 # ------------------------------------------------------------------

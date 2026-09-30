@@ -35,6 +35,11 @@ class EventsConnectTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertEqual(client.get(path).status_code, 200)
 
+        registration_page = client.get('/inscription').get_data(as_text=True)
+        for category in ['pianiste', 'fleuriste', 'location', 'salle', 'organisateur', 'styliste', 'transport']:
+            with self.subTest(category=category):
+                self.assertIn(f'value="{category}"', registration_page)
+
             login_page = client.get('/dashboard-access').get_data(as_text=True)
             self.assertIn('--gold-d:#d4880a', login_page)
             self.assertIn('background:linear-gradient(135deg,var(--gold),var(--gold-d))', login_page)
