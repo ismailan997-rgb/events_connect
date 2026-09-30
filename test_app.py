@@ -35,6 +35,10 @@ class EventsConnectTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertEqual(client.get(path).status_code, 200)
 
+            login_page = client.get('/dashboard-access').get_data(as_text=True)
+            self.assertIn('--gold-d:#d4880a', login_page)
+            self.assertIn('background:linear-gradient(135deg,var(--gold),var(--gold-d))', login_page)
+
         app_module.app.config['WTF_CSRF_ENABLED'] = True
         response = client.post('/dashboard-access', data={'phone': '221771234567', 'password': 'x'})
         self.assertEqual(response.status_code, 400)
