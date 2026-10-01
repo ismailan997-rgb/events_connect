@@ -72,6 +72,78 @@ class EventsConnectTests(unittest.TestCase):
         db.close()
         self.assertIsNone(provider)
 
+    def test_registration_requires_and_allows_up_to_three_categories(self):
+        client = app_module.app.test_client()
+        base_data = {
+            'name': 'Studio Sans Métier',
+            'city': 'Dakar',
+            'location': 'Plateau',
+            'phone': '221771222334',
+            'password': 'motdepasse-long',
+            'consent': 'yes',
+            'event_types': ['mariage'],
+        }
+        missing_category_response = client.post('/inscription', data=base_data)
+        self.assertEqual(missing_category_response.status_code, 200)
+        self.assertIn('Choisissez entre 1 et 3 métiers valides.', missing_category_response.get_data(as_text=True))
+
+        multi_data = dict(base_data)
+        multi_data.update({
+            'name': 'Studio Multi-Métiers',
+            'phone': '221771222335',
+            'categories': ['photographe', 'dj', 'traiteur'],
+        })
+        multi_response = client.post('/inscription', data=multi_data)
+        self.assertEqual(multi_response.status_code, 302)
+
+        db = app_module.get_db()
+        multi_provider = db.execute(
+            'SELECT category, categories, dashboard_token FROM providers WHERE phone = ?', ['221771222335']
+        ).fetchone()
+        db.close()
+
+        self.assertEqual(multi_provider['category'], 'photographe')
+        self.assertEqual(multi_provider['categories'], 'photographe,dj,traiteur')
+
+        dashboard_response = client.get(f"/dashboard/{multi_provider['dashboard_token']}")
+        self.assertIn('Photographe &amp; Vidéaste, DJ &amp; Animation Sonore, Traiteur &amp; Pâtisserie', dashboard_response.get_data(as_text=True))
+
+        db = app_module.get_db()
+        db.execute('UPDATE providers SET verified = 1 WHERE phone = ?', ['221771222335'])
+        db.commit()
+        db.close()
+        filtered_page = client.get('/?category=dj').get_data(as_text=True)
+        self.assertIn('Studio Multi-Métiers', filtered_page)
+
+        too_many_data = dict(base_data)
+        too_many_data.update({
+            'name': 'Studio Trop de Métiers',
+            'phone': '221771222336',
+            'categories': ['photographe', 'dj', 'traiteur', 'fleuriste'],
+        })
+        too_many_response = client.post('/inscription', data=too_many_data)
+        self.assertIn('Choisissez entre 1 et 3 métiers valides.', too_many_response.get_data(as_text=True))
+
+    def test_registration_password_requires_eight_characters(self):
+        client = app_module.app.test_client()
+        client.environ_base['REMOTE_ADDR'] = '198.51.100.8'
+        data = {
+            'name': 'Studio Mot de Passe',
+            'city': 'Dakar',
+            'location': 'Plateau',
+            'phone': '221771222337',
+            'password': '12345678',
+            'categories': ['photographe'],
+            'consent': 'yes',
+            'event_types': ['mariage'],
+        }
+        accepted = client.post('/inscription', data=data)
+        self.assertEqual(accepted.status_code, 302)
+
+        data.update({'name': 'Studio Mot de Passe Court', 'phone': '221771222338', 'password': '1234567'})
+        rejected = client.post('/inscription', data=data)
+        self.assertIn('Choisissez un mot de passe d’au moins 8 caractères.', rejected.get_data(as_text=True))
+
     def test_admin_accepts_direct_environment_password(self):
         app_module.ADMIN_PASSWORD_HASH = ''
         app_module.ADMIN_PASSWORD = 'un mot de passe admin long'
@@ -198,6 +270,8 @@ class EventsConnectTests(unittest.TestCase):
         db.close()
 
         self.assertIsNotNone(provider)
+        self.assertEqual(provider['category'], 'photographe')
+        self.assertEqual(provider['categories'], 'photographe')
         self.assertTrue(provider['dashboard_token'])
         self.assertEqual(provider['password'], '')
         self.assertTrue(check_password_hash(provider['password_hash'], 'monmotdepasse'))

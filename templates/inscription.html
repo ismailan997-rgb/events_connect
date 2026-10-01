@@ -70,10 +70,10 @@
         /* Category cards */
         .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}
         @media(max-width:500px){.cat-grid{grid-template-columns:repeat(2,1fr)}}
-        .cat-radio{display:none}
+        .cat-checkbox{display:none}
         .cat-label{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:var(--tr);text-align:center;font-size:.8rem;font-weight:600;color:var(--t2)}
         .cat-label .em{font-size:1.6rem}
-        .cat-radio:checked + .cat-label{background:rgba(245,166,35,.12);border-color:var(--gold);color:var(--gold-l)}
+        .cat-checkbox:checked + .cat-label{background:rgba(245,166,35,.12);border-color:var(--gold);color:var(--gold-l)}
         .cat-label:hover{border-color:var(--border-g);color:var(--gold-l)}
 
         /* Event checkboxes */
@@ -129,15 +129,15 @@
     <div class="error-box">⚠️ {{ error }}</div>
     {% endif %}
 
-    <form class="form-card" action="/inscription" method="POST" id="inscription-form" enctype="multipart/form-data">
+    <form class="form-card" action="/inscription" method="POST" id="inscription-form" enctype="multipart/form-data" onsubmit="return validateCategorySelection()">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        <!-- Métier -->
-        <div class="section-label">🎭 Votre métier principal <span class="req">*</span></div>
+        <!-- Métiers -->
+        <div class="section-label">🎭 Métiers de votre entreprise <span class="req">*</span> (1 à 3)</div>
         <div class="cat-grid">
             {% for key, cat in categories.items() %}
             <div>
-                <input class="cat-radio" type="radio" name="category" id="cat-{{ key }}" value="{{ key }}" required {% if loop.first %}checked{% endif %}>
+                <input class="cat-checkbox" type="checkbox" name="categories" id="cat-{{ key }}" value="{{ key }}" onchange="updateCategorySelection()">
                 <label class="cat-label" for="cat-{{ key }}">
                     <span class="em">{{ cat.emoji }}</span>
                     {{ cat.label }}
@@ -145,6 +145,7 @@
             </div>
             {% endfor %}
         </div>
+        <p class="hint" id="category-selection-hint" role="status" aria-live="polite" style="margin-top:-14px;margin-bottom:22px">Choisissez au moins un métier, jusqu’à 3.</p>
 
         <!-- Types d'événements couverts -->
         <div class="section-label">🎉 Événements que vous couvrez <span class="req">*</span></div>
@@ -173,12 +174,12 @@
             </div>
             <div class="fg">
                 <label for="password-in">Mot de passe du dashboard <span class="req">*</span></label>
-                <input type="password" id="password-in" name="password" placeholder="Choisissez un mot de passe" required minlength="12" maxlength="128" autocomplete="new-password">
+                <input type="password" id="password-in" name="password" placeholder="Choisissez un mot de passe" required minlength="8" maxlength="128" autocomplete="new-password">
                 <span class="hint">Utilisez-le avec votre numéro WhatsApp pour ouvrir le dashboard</span>
             </div>
             <div class="fg">
                 <label for="confirm-password-in">Confirmer le mot de passe <span class="req">*</span></label>
-                <input type="password" id="confirm-password-in" name="confirm_password" placeholder="Réécrivez le mot de passe" required minlength="12" maxlength="128" autocomplete="new-password">
+                <input type="password" id="confirm-password-in" name="confirm_password" placeholder="Réécrivez le mot de passe" required minlength="8" maxlength="128" autocomplete="new-password">
             </div>
             <div class="fg">
                 <label for="city-in">Ville principale <span class="req">*</span></label>
@@ -261,6 +262,31 @@
 </footer>
 
 <script>
+function updateCategorySelection() {
+    const selected = Array.from(document.querySelectorAll('.cat-checkbox:checked'));
+    const hint = document.getElementById('category-selection-hint');
+    hint.style.color = '';
+    if (selected.length > 3) {
+        selected[selected.length - 1].checked = false;
+        hint.textContent = '3 métiers maximum. Décochez-en un pour modifier votre sélection.';
+        return;
+    }
+    hint.textContent = selected.length
+        ? `${selected.length}/3 métiers sélectionnés.`
+        : 'Choisissez au moins un métier, jusqu’à 3.';
+}
+
+function validateCategorySelection() {
+    const selectedCount = document.querySelectorAll('.cat-checkbox:checked').length;
+    const hint = document.getElementById('category-selection-hint');
+    if (selectedCount === 0) {
+        hint.textContent = 'Choisissez au moins un métier pour continuer.';
+        hint.style.color = '#f87171';
+        return false;
+    }
+    return true;
+}
+
 function previewFileInput(input, previewId) {
     const box = document.getElementById(previewId);
     const file = input.files && input.files[0];

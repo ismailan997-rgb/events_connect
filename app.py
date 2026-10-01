@@ -162,6 +162,7 @@ def init_db():
                     id BIGSERIAL PRIMARY KEY,
                     name TEXT NOT NULL,
                     category TEXT NOT NULL,
+                    categories TEXT NOT NULL DEFAULT '',
                     city TEXT NOT NULL,
                     location TEXT NOT NULL,
                     price_from INTEGER NOT NULL DEFAULT 0,
@@ -196,6 +197,7 @@ def init_db():
                     id          INTEGER PRIMARY KEY AUTOINCREMENT,
                     name        TEXT NOT NULL,
                     category    TEXT NOT NULL,
+                    categories  TEXT NOT NULL DEFAULT '',
                     city        TEXT NOT NULL,
                     location    TEXT NOT NULL,
                     price_from  INTEGER NOT NULL DEFAULT 0,
@@ -242,6 +244,8 @@ def init_db():
             conn.execute("ALTER TABLE providers ADD COLUMN password TEXT NOT NULL DEFAULT ''")
         if 'password_hash' not in cols:
             conn.execute("ALTER TABLE providers ADD COLUMN password_hash TEXT NOT NULL DEFAULT ''")
+        if 'categories' not in cols:
+            conn.execute("ALTER TABLE providers ADD COLUMN categories TEXT NOT NULL DEFAULT ''")
 
         if DATABASE_URL:
             review_cols = [row['column_name'] for row in conn.execute(
@@ -278,9 +282,13 @@ init_db()
 def enrich(row):
     """Convert a sqlite3.Row to a plain dict and add computed fields."""
     p = dict(row)
-    cat = CATEGORIES.get(p['category'], {'label': p['category'], 'emoji': '🎭'})
-    p['category_display'] = cat['label']
-    p['category_emoji']   = cat['emoji']
+    category_keys = [key.strip() for key in (p.get('categories') or '').split(',') if key.strip()]
+    if not category_keys and p.get('category'):
+        category_keys = [p['category']]
+    categories = [CATEGORIES[key] for key in category_keys if key in CATEGORIES]
+    p['category_keys'] = category_keys
+    p['category_display'] = ', '.join(cat['label'] for cat in categories) or 'Métier non précisé'
+    p['category_emoji'] = categories[0]['emoji'] if categories else '🎭'
     p['stars_full']  = int(round(p.get('avg_rating', 0)))
     p['avg_rating']  = round(p.get('avg_rating', 0), 1)
     p['dashboard_url'] = ''
@@ -370,8 +378,8 @@ def home():
     params = []
 
     if cat_filter:
-        sql += ' AND p.category = ?'
-        params.append(cat_filter)
+        sql += " AND (p.category = ? OR (',' || p.categories || ',') LIKE ?)"
+        params.extend([cat_filter, f'%,{cat_filter},%'])
     if city_filter:
         sql += ' AND (LOWER(p.city) LIKE ? OR LOWER(p.location) LIKE ?)'
         params += [f'%{city_filter}%', f'%{city_filter}%']
@@ -658,7 +666,11 @@ def inscription():
 
     if request.method == 'POST':
         name        = request.form.get('name', '').strip()
-        category    = request.form.get('category', '').strip()
+        submitted_categories = request.form.getlist('categories')
+        if not submitted_categories and request.form.get('category', '').strip():
+            submitted_categories = [request.form.get('category', '').strip()]
+        selected_categories = list(dict.fromkeys(submitted_categories))
+        category = selected_categories[0] if selected_categories else ''
         city        = request.form.get('city', '').strip()
         location    = request.form.get('location', '').strip()
         price_from  = request.form.get('price_from', '0').strip()
@@ -680,20 +692,20 @@ def inscription():
         portfolio_title = request.form.get('portfolio_title', '').strip()
         portfolio_items = []
 
-        if not all([name, category, city, location, phone, password]):
+        if not all([name, city, location, phone, password]):
             error = 'Veuillez remplir tous les champs obligatoires (*) et choisir un mot de passe.'
         elif confirm_password != password:
             error = 'La confirmation du mot de passe ne correspond pas.'
         elif len(password) > 128:
             error = 'Le mot de passe ne peut pas dépasser 128 caractères.'
-        elif len(password) < 12:
-            error = 'Choisissez un mot de passe d’au moins 12 caractères.'
+        elif len(password) < 8:
+            error = 'Choisissez un mot de passe d’au moins 8 caractères.'
         elif request.form.get('consent') != 'yes':
             error = 'Vous devez accepter les conditions et la politique de confidentialité.'
         elif not phone.isdigit() or not 8 <= len(phone) <= 15:
             error = 'Saisissez un numéro international valide, chiffres uniquement (ex: 221771234567).'
-        elif category not in CATEGORIES:
-            error = 'Catégorie invalide.'
+        elif not selected_categories or len(selected_categories) > 3 or any(key not in CATEGORIES for key in selected_categories):
+            error = 'Choisissez entre 1 et 3 métiers valides.'
         elif len(name) > 100 or len(city) > 60 or len(location) > 100:
             error = 'Vérifiez la longueur du nom, de la ville et de la zone.'
         elif len(price_label) > 120 or len(specialties) > 200 or len(description) > 1000 or len(portfolio_title) > 100:
@@ -755,10 +767,10 @@ def inscription():
             db = get_db()
             db.execute('''
                 INSERT INTO providers
-                    (name, category, city, location, price_from, price_label,
+                    (name, category, categories, city, location, price_from, price_label,
                      specialties, phone, password, password_hash, image_url, description, verified, event_types, portfolio, dashboard_token)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?)
-            ''', [name, category, city, location, price_int, price_label,
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?)
+            ''', [name, category, ','.join(selected_categories), city, location, price_int, price_label,
                   specialties, phone, '', generate_password_hash(password), image_url, description, events_str, json.dumps(portfolio_items), dashboard_token])
             db.commit()
             provider_id = db.execute('SELECT id FROM providers WHERE dashboard_token = ?', [dashboard_token]).fetchone()['id']
