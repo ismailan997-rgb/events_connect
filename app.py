@@ -32,7 +32,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['SESSION_COOKIE_SECURE'] = IS_PRODUCTION
-app.config['MAX_CONTENT_LENGTH'] = 8 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
 csrf = CSRFProtect(app)
 limiter = Limiter(
     get_remote_address,
@@ -90,6 +90,9 @@ EVENT_TYPES = {
     'soiree':       {'label': 'Soirée & Gala',       'emoji': '🍸', 'badge': 'Soirée 🍸'},
     'pro':          {'label': 'Événement Pro',       'emoji': '💼', 'badge': 'Pro 💼'},
 }
+
+MAX_PORTFOLIO_IMAGES = 5
+MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024
 
 CATEGORIES = {
     'photographe': {'label': 'Photographe & Vidéaste',    'emoji': '📷'},
@@ -314,6 +317,14 @@ def upload_file_to_cloudinary(file_storage, folder='events-connect'):
         return ''
     if file_storage.mimetype not in {'image/jpeg', 'image/png', 'image/webp'}:
         raise ValueError('Formats autorisés : JPG, PNG ou WebP.')
+    try:
+        file_storage.stream.seek(0, os.SEEK_END)
+        file_size = file_storage.stream.tell()
+        file_storage.stream.seek(0)
+    except (AttributeError, OSError):
+        raise ValueError('Impossible de vérifier la taille du fichier.')
+    if file_size > MAX_IMAGE_SIZE_BYTES:
+        raise ValueError('Chaque image doit faire 5 Mo maximum.')
     cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME', '')
     api_key = os.environ.get('CLOUDINARY_API_KEY', '')
     api_secret = os.environ.get('CLOUDINARY_API_SECRET', '')
@@ -682,9 +693,14 @@ def inscription():
         description = request.form.get('description', '').strip()
 
         image_file = request.files.get('image')
-        portfolio_file = request.files.get('portfolio_image')
+        portfolio_files = [
+            file for file in request.files.getlist('portfolio_images')
+            if file and file.filename
+        ]
+        legacy_portfolio_file = request.files.get('portfolio_image')
+        if legacy_portfolio_file and legacy_portfolio_file.filename:
+            portfolio_files.append(legacy_portfolio_file)
         image_url = ''
-        portfolio_url = ''
 
         selected_events = request.form.getlist('event_types')
         events_str = ','.join(selected_events) if selected_events else 'mariage,bapteme,anniversaire,soiree'
@@ -692,7 +708,9 @@ def inscription():
         portfolio_title = request.form.get('portfolio_title', '').strip()
         portfolio_items = []
 
-        if not all([name, city, location, phone, password]):
+        if len(portfolio_files) > MAX_PORTFOLIO_IMAGES:
+            error = f'Vous pouvez ajouter jusqu’à {MAX_PORTFOLIO_IMAGES} photos de réalisation.'
+        elif not all([name, city, location, phone, password]):
             error = 'Veuillez remplir tous les champs obligatoires (*) et choisir un mot de passe.'
         elif confirm_password != password:
             error = 'La confirmation du mot de passe ne correspond pas.'
@@ -744,8 +762,17 @@ def inscription():
             try:
                 if image_file and image_file.filename:
                     image_url = upload_file_to_cloudinary(image_file, 'events-connect/providers')
-                if portfolio_file and portfolio_file.filename:
+                for index, portfolio_file in enumerate(portfolio_files, start=1):
                     portfolio_url = upload_file_to_cloudinary(portfolio_file, 'events-connect/portfolio')
+                    title = portfolio_title or 'Réalisation'
+                    if len(portfolio_files) > 1:
+                        title = f'{title} {index}'
+                    portfolio_items.append({
+                        'url': portfolio_url,
+                        'title': title,
+                        'event_type': 'Événement',
+                        'caption': 'Prestation réalisée par nos soins'
+                    })
             except ValueError as exc:
                 error = str(exc)
                 return render_template(
@@ -754,14 +781,6 @@ def inscription():
                     event_types=EVENT_TYPES,
                     error=error
                 )
-
-            if portfolio_url:
-                portfolio_items.append({
-                    'url': portfolio_url,
-                    'title': portfolio_title or 'Réalisation récente',
-                    'event_type': 'Événement',
-                    'caption': 'Prestation réalisée par nos soins'
-                })
 
             dashboard_token = uuid.uuid4().hex
             db = get_db()

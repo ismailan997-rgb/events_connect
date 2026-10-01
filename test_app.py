@@ -1,4 +1,5 @@
 import io
+import json
 import os
 import tempfile
 import unittest
@@ -36,6 +37,9 @@ class EventsConnectTests(unittest.TestCase):
                 self.assertEqual(client.get(path).status_code, 200)
 
         registration_page = client.get('/inscription').get_data(as_text=True)
+        self.assertIn('name="portfolio_images"', registration_page)
+        self.assertIn('multiple', registration_page)
+        self.assertIn('jusqu’à 5 photos'.lower(), registration_page.lower())
         for category in ['pianiste', 'fleuriste', 'location', 'salle', 'organisateur', 'styliste', 'transport']:
             with self.subTest(category=category):
                 self.assertIn(f'value="{category}"', registration_page)
@@ -71,6 +75,26 @@ class EventsConnectTests(unittest.TestCase):
         ).fetchone()
         db.close()
         self.assertIsNone(provider)
+
+    def test_registration_rejects_more_than_five_portfolio_images(self):
+        client = app_module.app.test_client()
+        files = [
+            (io.BytesIO(f'image-{index}'.encode()), f'portfolio-{index}.jpg')
+            for index in range(6)
+        ]
+        response = client.post('/inscription', data={
+            'name': 'Studio Six Photos',
+            'category': 'photographe',
+            'city': 'Dakar',
+            'location': 'Plateau',
+            'phone': '221771222399',
+            'password': 'motdepasse-long',
+            'consent': 'yes',
+            'event_types': ['mariage'],
+            'portfolio_images': files,
+        }, content_type='multipart/form-data')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('jusqu’à 5 photos', response.get_data(as_text=True).lower())
 
     def test_registration_requires_and_allows_up_to_three_categories(self):
         client = app_module.app.test_client()
@@ -235,7 +259,8 @@ class EventsConnectTests(unittest.TestCase):
         }), patch('cloudinary.uploader.upload') as upload_mock:
             upload_mock.side_effect = [
                 {'secure_url': 'https://cdn.example.com/photo.jpg'},
-                {'secure_url': 'https://cdn.example.com/portfolio.jpg'},
+                {'secure_url': 'https://cdn.example.com/portfolio-1.jpg'},
+                {'secure_url': 'https://cdn.example.com/portfolio-2.jpg'},
             ]
 
             response = client.post(
@@ -255,7 +280,10 @@ class EventsConnectTests(unittest.TestCase):
                     'description': 'Photographe premium',
                     'event_types': ['mariage', 'anniversaire'],
                     'image': (io.BytesIO(b'fake-image-content'), 'photo.jpg'),
-                    'portfolio_image': (io.BytesIO(b'fake-portfolio-content'), 'portfolio.jpg'),
+                    'portfolio_images': [
+                        (io.BytesIO(b'fake-portfolio-content-1'), 'portfolio-1.jpg'),
+                        (io.BytesIO(b'fake-portfolio-content-2'), 'portfolio-2.jpg'),
+                    ],
                 },
                 content_type='multipart/form-data',
             )
@@ -272,6 +300,10 @@ class EventsConnectTests(unittest.TestCase):
         self.assertIsNotNone(provider)
         self.assertEqual(provider['category'], 'photographe')
         self.assertEqual(provider['categories'], 'photographe')
+        portfolio = json.loads(provider['portfolio'])
+        self.assertEqual(len(portfolio), 2)
+        self.assertEqual(portfolio[0]['url'], 'https://cdn.example.com/portfolio-1.jpg')
+        self.assertEqual(portfolio[1]['url'], 'https://cdn.example.com/portfolio-2.jpg')
         self.assertTrue(provider['dashboard_token'])
         self.assertEqual(provider['password'], '')
         self.assertTrue(check_password_hash(provider['password_hash'], 'monmotdepasse'))

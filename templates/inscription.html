@@ -219,18 +219,19 @@
         </div>
 
         <!-- Photos -->
-        <div class="section-label">🖼️ Photo principale & Première réalisation</div>
+        <div class="section-label">🖼️ Photo principale & Réalisations</div>
         <div class="form-grid">
             <div class="fg">
                 <label for="image-in">Photo de profil / Couverture</label>
-                <input type="file" id="image-in" name="image" accept="image/*" onchange="previewFileInput(this, 'img-preview')">
-                <span class="hint">JPG, PNG ou WebP, 8 Mo maximum</span>
+                <input type="file" id="image-in" name="image" accept="image/jpeg,image/png,image/webp" onchange="previewFileInput(this, 'img-preview')">
+                <span class="hint">JPG, PNG ou WebP, 5 Mo maximum</span>
                 <div class="img-preview" id="img-preview">📷 Aperçu de la photo</div>
             </div>
             <div class="fg">
-                <label for="p-file-in">Photo d'une réalisation passée (Portfolio)</label>
-                <input type="file" id="p-file-in" name="portfolio_image" accept="image/*">
-                <label for="p-title-in" style="margin-top:8px">Titre de la réalisation</label>
+                <label for="p-file-in">Photos de vos réalisations</label>
+                <input type="file" id="p-file-in" name="portfolio_images" accept="image/jpeg,image/png,image/webp" multiple aria-describedby="portfolio-hint" onchange="updatePortfolioCount(this)">
+                <span class="hint" id="portfolio-hint">Jusqu’à 5 photos JPG, PNG ou WebP, 5 Mo chacune. Sélectionnez plusieurs fichiers en maintenant Ctrl.</span>
+                <label for="p-title-in" style="margin-top:8px">Titre des réalisations (facultatif)</label>
                 <input type="text" id="p-title-in" name="portfolio_title" placeholder="Ex: Mariage VIP aux Almadies" maxlength="100">
             </div>
         </div>
@@ -304,6 +305,21 @@ function previewFileInput(input, previewId) {
         box.appendChild(img);
     };
     reader.readAsDataURL(file);
+}
+
+function updatePortfolioCount(input) {
+    const hint = document.getElementById('portfolio-hint');
+    if (input.files.length > 5) {
+        input.setCustomValidity('Vous pouvez sélectionner jusqu’à 5 photos.');
+        hint.textContent = 'Maximum 5 photos. Désélectionnez des fichiers pour continuer.';
+        hint.style.color = '#f87171';
+        return;
+    }
+    input.setCustomValidity('');
+    hint.style.color = '';
+    hint.textContent = input.files.length
+        ? `${input.files.length}/5 photos sélectionnées. Chaque image doit faire 5 Mo maximum.`
+        : 'Jusqu’à 5 photos JPG, PNG ou WebP, 5 Mo chacune. Sélectionnez plusieurs fichiers en maintenant Ctrl.';
 }
 </script>
 </body>
