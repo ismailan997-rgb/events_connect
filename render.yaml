@@ -30,12 +30,10 @@ services:
       - key: SUPPORT_WHATSAPP
         sync: false
       - key: LEGAL_OPERATOR_NAME
-        sync: false
+        value: Papa Ismaila Ndiaye
       - key: LEGAL_OPERATOR_ADDRESS
-        sync: false
-      - key: LEGAL_OPERATOR_REGISTRATION
-        sync: false
+        value: Quartier Apecsy 2, Dakar, Sénégal
       - key: HOSTING_PROVIDER
-        sync: false
+        value: Render
       - key: RATELIMIT_STORAGE_URI
         sync: false

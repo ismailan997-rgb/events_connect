@@ -58,6 +58,13 @@ class EventsConnectTests(unittest.TestCase):
         api_response = client.post('/api/register-provider')
         self.assertEqual(api_response.status_code, 410)
 
+    def test_contact_displays_default_support_email(self):
+        with patch.dict(os.environ, {'SUPPORT_EMAIL': ''}):
+            response = app_module.app.test_client().get('/contact')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('mailto:contact@eventsconnect.site', response.get_data(as_text=True))
+
     def test_registration_requires_privacy_consent(self):
         client = app_module.app.test_client()
         response = client.post('/inscription', data={

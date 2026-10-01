@@ -12,5 +12,4 @@
     {% if legal_operator_registration %}<p><strong>Immatriculation :</strong> {{ legal_operator_registration }}</p>{% endif %}
     <p><strong>Contact :</strong> {% if support_email %}<a href="mailto:{{ support_email }}">{{ support_email }}</a>{% endif %}{% if support_email and support_whatsapp %} · {% endif %}{% if support_whatsapp %}<a href="https://wa.me/{{ support_whatsapp }}">WhatsApp +{{ support_whatsapp }}</a>{% endif %}{% if not support_email and not support_whatsapp %}À configurer avant le lancement public.{% endif %}</p>
     <p><strong>Hébergement :</strong> {{ hosting_provider or 'Hébergeur à renseigner.' }}</p>
-    <p>Avant diffusion publique, complétez les informations d’immatriculation applicables et les coordonnées exactes de l’hébergeur. Faites vérifier ces mentions selon les obligations en vigueur au Sénégal.</p>
 </main></body></html>

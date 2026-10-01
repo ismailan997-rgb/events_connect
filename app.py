@@ -359,7 +359,7 @@ def add_security_headers(response):
 @app.context_processor
 def inject_contact_details():
     return {
-        'support_email': os.environ.get('SUPPORT_EMAIL', ''),
+        'support_email': os.environ.get('SUPPORT_EMAIL') or 'contact@eventsconnect.site',
         'support_whatsapp': ''.join(char for char in os.environ.get('SUPPORT_WHATSAPP', '') if char.isdigit()),
         'legal_operator_name': os.environ.get('LEGAL_OPERATOR_NAME', ''),
         'legal_operator_address': os.environ.get('LEGAL_OPERATOR_ADDRESS', ''),
