@@ -37,6 +37,8 @@ class EventsConnectTests(unittest.TestCase):
                 self.assertEqual(client.get(path).status_code, 200)
 
         registration_page = client.get('/inscription').get_data(as_text=True)
+        self.assertIn('name="price_from"', registration_page)
+        self.assertNotIn('Libellé affiché', registration_page)
         self.assertIn('name="portfolio_images"', registration_page)
         self.assertIn('multiple', registration_page)
         self.assertIn('jusqu’à 5 photos'.lower(), registration_page.lower())
@@ -271,7 +273,7 @@ class EventsConnectTests(unittest.TestCase):
                     'city': 'Dakar',
                     'location': 'Almadies',
                     'price_from': '150000',
-                    'price_label': 'À partir de 150 000 FCFA',
+                    'price_label': 'Libellé personnalisé ignoré',
                     'specialties': 'Mariages & portrait',
                     'phone': '221771234567',
                     'password': 'monmotdepasse',
@@ -300,6 +302,7 @@ class EventsConnectTests(unittest.TestCase):
         self.assertIsNotNone(provider)
         self.assertEqual(provider['category'], 'photographe')
         self.assertEqual(provider['categories'], 'photographe')
+        self.assertEqual(provider['price_label'], 'À partir de 150 000 FCFA')
         portfolio = json.loads(provider['portfolio'])
         self.assertEqual(len(portfolio), 2)
         self.assertEqual(portfolio[0]['url'], 'https://cdn.example.com/portfolio-1.jpg')

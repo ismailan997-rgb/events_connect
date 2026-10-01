@@ -685,7 +685,6 @@ def inscription():
         city        = request.form.get('city', '').strip()
         location    = request.form.get('location', '').strip()
         price_from  = request.form.get('price_from', '0').strip()
-        price_label = request.form.get('price_label', '').strip()
         specialties = request.form.get('specialties', '').strip()
         phone       = request.form.get('phone', '').strip().replace(' ', '').replace('+', '')
         password    = request.form.get('password', '').strip()
@@ -726,7 +725,7 @@ def inscription():
             error = 'Choisissez entre 1 et 3 métiers valides.'
         elif len(name) > 100 or len(city) > 60 or len(location) > 100:
             error = 'Vérifiez la longueur du nom, de la ville et de la zone.'
-        elif len(price_label) > 120 or len(specialties) > 200 or len(description) > 1000 or len(portfolio_title) > 100:
+        elif len(specialties) > 200 or len(description) > 1000 or len(portfolio_title) > 100:
             error = 'Un des champs descriptifs dépasse la longueur autorisée.'
         elif not selected_events or any(event not in EVENT_TYPES for event in selected_events):
             error = 'Choisissez au moins un type d’événement valide.'
@@ -756,8 +755,7 @@ def inscription():
                     error='Le tarif saisi dépasse la limite autorisée.'
                 ), 400
 
-            if not price_label:
-                price_label = f'À partir de {price_int:,} FCFA'.replace(',', ' ')
+            price_label = f'À partir de {price_int:,} FCFA'.replace(',', ' ') if price_int else 'Sur devis'
 
             try:
                 if image_file and image_file.filename:
