@@ -26,7 +26,7 @@ services:
       - key: ADMIN_PASSWORD
         sync: false
       - key: SUPPORT_EMAIL
-        sync: false
+        value: contact@eventsconnect.site
       - key: SUPPORT_WHATSAPP
         sync: false
       - key: LEGAL_OPERATOR_NAME
