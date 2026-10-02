@@ -65,6 +65,37 @@ class EventsConnectTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('mailto:contact@eventsconnect.site', response.get_data(as_text=True))
 
+    def test_daily_unique_visitors_require_consent_and_deduplicate(self):
+        client = app_module.app.test_client()
+        client.get('/')
+        db = app_module.get_db()
+        self.assertEqual(db.execute('SELECT COUNT(*) FROM daily_visitors').fetchone()[0], 0)
+        db.close()
+
+        client.post('/analytics-consent', data={'choice': 'accepted', 'next': '/'})
+        client.get('/contact')
+        client.get('/')
+
+        second_client = app_module.app.test_client()
+        second_client.post('/analytics-consent', data={'choice': 'accepted', 'next': '/'})
+        second_client.get('/')
+
+        declined_client = app_module.app.test_client()
+        declined_client.post('/analytics-consent', data={'choice': 'declined', 'next': '/'})
+        declined_client.get('/')
+
+        db = app_module.get_db()
+        visitors_today = db.execute('SELECT unique_visitors FROM daily_visitors').fetchone()[0]
+        db.close()
+        self.assertEqual(visitors_today, 2)
+
+        app_module.ADMIN_PASSWORD = 'un mot de passe admin long'
+        admin_client = app_module.app.test_client()
+        admin_client.post('/admin', data={'password': app_module.ADMIN_PASSWORD})
+        admin_page = admin_client.get('/admin').get_data(as_text=True)
+        self.assertIn('Visiteurs uniques ayant accepté la mesure', admin_page)
+        self.assertIn('Somme sur 30 jours', admin_page)
+
     def test_registration_requires_privacy_consent(self):
         client = app_module.app.test_client()
         response = client.post('/inscription', data={

@@ -3,15 +3,18 @@ import json
 import secrets
 import sqlite3
 import uuid
+from datetime import datetime, timedelta
 from functools import wraps
+from zoneinfo import ZoneInfo
+from urllib.parse import urlsplit
 
 import cloudinary
 import cloudinary.uploader
-from flask import Flask, render_template, request, redirect, url_for, jsonify, session
-from datetime import datetime
+from flask import Flask, g, render_template, request, redirect, url_for, jsonify, session
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_wtf.csrf import CSRFProtect
+from itsdangerous import BadSignature, URLSafeSerializer
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -230,6 +233,13 @@ def init_db():
                 );
             ''')
 
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS daily_visitors (
+                visit_date TEXT PRIMARY KEY,
+                unique_visitors INTEGER NOT NULL DEFAULT 0
+            )
+        ''')
+
         # Migrations automatiques si la table existait sans ces colonnes
         if DATABASE_URL:
             cols = [row['column_name'] for row in conn.execute(
@@ -345,6 +355,66 @@ def upload_file_to_cloudinary(file_storage, folder='events-connect'):
         raise ValueError(f"Échec du téléversement d'image : {str(exc)}") from exc
 
 
+VISITOR_COOKIE_NAME = 'events_connect_visitor_day'
+VISITOR_COOKIE_MAX_AGE = 365 * 24 * 60 * 60
+ANALYTICS_CONSENT_COOKIE = 'events_connect_analytics_consent'
+visitor_cookie_serializer = URLSafeSerializer(
+    app.config['SECRET_KEY'], salt='events-connect-daily-visitors'
+)
+analytics_consent_serializer = URLSafeSerializer(
+    app.config['SECRET_KEY'], salt='events-connect-analytics-consent'
+)
+
+
+def current_visit_date():
+    return datetime.now(ZoneInfo('Africa/Dakar')).date()
+
+
+@app.before_request
+def count_daily_unique_visitor():
+    if (
+        request.method != 'GET'
+        or request.endpoint is None
+        or request.endpoint == 'static'
+        or request.path.startswith(('/admin', '/dashboard', '/api/'))
+    ):
+        return
+
+    try:
+        analytics_consent = analytics_consent_serializer.loads(
+            request.cookies.get(ANALYTICS_CONSENT_COOKIE, '')
+        )
+    except BadSignature:
+        analytics_consent = None
+    if analytics_consent != 'accepted':
+        return
+
+    today = current_visit_date().isoformat()
+    try:
+        last_counted_day = visitor_cookie_serializer.loads(
+            request.cookies.get(VISITOR_COOKIE_NAME, '')
+        )
+    except BadSignature:
+        last_counted_day = None
+    if last_counted_day == today:
+        return
+
+    try:
+        with get_db() as conn:
+            conn.execute(
+                '''INSERT INTO daily_visitors (visit_date, unique_visitors)
+                   VALUES (?, 1)
+                   ON CONFLICT (visit_date) DO UPDATE
+                   SET unique_visitors = daily_visitors.unique_visitors + 1''',
+                [today],
+            )
+    except Exception:
+        app.logger.exception('Unable to record daily visitor count')
+        return
+
+    g.visitor_day_cookie = visitor_cookie_serializer.dumps(today)
+
+
 @app.after_request
 def add_security_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -353,6 +423,16 @@ def add_security_headers(response):
     response.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()'
     if IS_PRODUCTION:
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    visitor_day_cookie = getattr(g, 'visitor_day_cookie', None)
+    if visitor_day_cookie:
+        response.set_cookie(
+            VISITOR_COOKIE_NAME,
+            visitor_day_cookie,
+            max_age=VISITOR_COOKIE_MAX_AGE,
+            secure=IS_PRODUCTION,
+            httponly=True,
+            samesite='Lax',
+        )
     return response
 
 
@@ -366,6 +446,17 @@ def inject_contact_details():
         'hosting_provider': os.environ.get('HOSTING_PROVIDER', ''),
         'legal_operator_registration': os.environ.get('LEGAL_OPERATOR_REGISTRATION', ''),
     }
+
+
+@app.context_processor
+def inject_analytics_consent():
+    try:
+        analytics_consent = analytics_consent_serializer.loads(
+            request.cookies.get(ANALYTICS_CONSENT_COOKIE, '')
+        )
+    except BadSignature:
+        analytics_consent = None
+    return {'analytics_consent': analytics_consent}
 
 # ------------------------------------------------------------------
 # Routes
@@ -442,6 +533,37 @@ def legal_notice():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
+
+@app.route('/analytics-consent', methods=['POST'])
+def save_analytics_consent():
+    choice = request.form.get('choice')
+    if choice not in {'accepted', 'declined'}:
+        return redirect(url_for('home'))
+
+    next_path = request.form.get('next', '/')
+    parsed_next_path = urlsplit(next_path)
+    if (
+        not next_path.startswith('/')
+        or next_path.startswith('//')
+        or '\\' in next_path
+        or parsed_next_path.scheme
+        or parsed_next_path.netloc
+    ):
+        next_path = url_for('home')
+
+    response = redirect(next_path)
+    response.set_cookie(
+        ANALYTICS_CONSENT_COOKIE,
+        analytics_consent_serializer.dumps(choice),
+        max_age=VISITOR_COOKIE_MAX_AGE,
+        secure=IS_PRODUCTION,
+        httponly=True,
+        samesite='Lax',
+    )
+    if choice == 'declined':
+        response.delete_cookie(VISITOR_COOKIE_NAME, secure=IS_PRODUCTION, httponly=True, samesite='Lax')
+    return response
 
 @app.route('/dashboard-access', methods=['GET', 'POST'])
 @limiter.limit('5 per 15 minutes', methods=['POST'])
@@ -627,10 +749,24 @@ def admin():
         "SELECT r.id, r.provider_id, r.author, r.rating, r.comment, r.created_at, p.name AS provider_name "
         "FROM reviews r JOIN providers p ON p.id = r.provider_id WHERE r.status = 'pending' ORDER BY r.created_at ASC"
     ).fetchall()
+    today = current_visit_date()
+    first_day = today - timedelta(days=29)
+    visitor_rows = db.execute(
+        'SELECT visit_date, unique_visitors FROM daily_visitors WHERE visit_date >= ? AND visit_date <= ?',
+        [first_day.isoformat(), today.isoformat()],
+    ).fetchall()
     db.close()
+    visitor_counts = {row['visit_date']: row['unique_visitors'] for row in visitor_rows}
+    visitors_today = visitor_counts.get(today.isoformat(), 0)
+    visitors_7_days = sum(
+        visitor_counts.get((today - timedelta(days=offset)).isoformat(), 0)
+        for offset in range(7)
+    )
+    visitors_30_days = sum(visitor_counts.values())
     return render_template(
         'admin.html', providers=providers, verified_providers=verified_providers,
-        pending_reviews=pending_reviews
+        pending_reviews=pending_reviews, visitors_today=visitors_today,
+        visitors_7_days=visitors_7_days, visitors_30_days=visitors_30_days
     )
 
 

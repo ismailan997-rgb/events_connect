@@ -1,0 +1,33 @@
+<style>
+    .analytics-consent-panel{position:fixed;right:16px;bottom:16px;z-index:10000;width:min(460px,calc(100vw - 32px));padding:16px;background:#14231c;color:#f2f4ed;border:1px solid #55705e;border-radius:6px;box-shadow:0 12px 36px #0008;font:14px/1.5 system-ui,sans-serif}
+    .analytics-consent-panel[hidden],.analytics-consent-toggle[hidden]{display:none}
+    .analytics-consent-panel p{margin:6px 0 14px;color:#c1cbc2}
+    .analytics-consent-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .analytics-consent-panel button,.analytics-consent-toggle{padding:8px 12px;border:1px solid #718477;border-radius:5px;background:#26382e;color:#f2f4ed;font:inherit;cursor:pointer}
+    .analytics-consent-panel button:first-child{background:#e8b84c;border-color:#e8b84c;color:#172019}
+    .analytics-consent-toggle{position:fixed;right:16px;bottom:16px;z-index:9999;background:#14231c}
+</style>
+<aside class="analytics-consent-panel" id="analytics-consent-panel" role="dialog" aria-labelledby="analytics-consent-title" {% if analytics_consent in ['accepted', 'declined'] %}hidden{% endif %}>
+    <strong id="analytics-consent-title">Mesure d’audience</strong>
+    <p>Avec ton accord, un cookie mémorise la date de dernière visite pour compter les visiteurs uniques par jour. Aucune adresse IP n’est enregistrée par ce compteur. Tu peux refuser ou modifier ton choix plus tard.</p>
+    <form method="post" action="{{ url_for('save_analytics_consent') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="next" value="{{ request.full_path }}">
+        <div class="analytics-consent-actions">
+            <button type="submit" name="choice" value="accepted">Accepter</button>
+            <button type="submit" name="choice" value="declined">Refuser</button>
+        </div>
+    </form>
+</aside>
+<button class="analytics-consent-toggle" id="analytics-consent-toggle" type="button" aria-controls="analytics-consent-panel" aria-expanded="false" {% if analytics_consent not in ['accepted', 'declined'] %}hidden{% endif %}>Préférences de mesure</button>
+<script>
+    (()=>{
+        const panel=document.getElementById('analytics-consent-panel');
+        const toggle=document.getElementById('analytics-consent-toggle');
+        if(!panel||!toggle)return;
+        toggle.addEventListener('click',()=>{
+            panel.hidden=!panel.hidden;
+            toggle.setAttribute('aria-expanded',String(!panel.hidden));
+        });
+    })();
+</script>

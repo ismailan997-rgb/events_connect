@@ -12,4 +12,4 @@
     {% if support_whatsapp %}<p class="contact"><strong>WhatsApp</strong><br><a href="https://wa.me/{{ support_whatsapp }}">Écrire au +{{ support_whatsapp }}</a></p>{% endif %}
     {% if not support_email and not support_whatsapp %}<p class="contact">Les coordonnées de contact doivent être configurées avant le lancement public.</p>{% endif %}
     <p><a href="/mentions-legales">Mentions légales</a> · <a href="/confidentialite">Confidentialité</a> · <a href="/conditions">Conditions</a></p>
-</main></body></html>
+</main>{% include '_analytics_consent.html' %}</body></html>

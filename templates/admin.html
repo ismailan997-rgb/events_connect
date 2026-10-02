@@ -43,6 +43,14 @@
     <p>Vérifiez les coordonnées avec le prestataire avant d’attribuer le badge. Pour les avis, ne publiez qu’après avoir contrôlé qu’une prestation a bien eu lieu.</p>
 
     <section>
+        <h2>Visiteurs uniques ayant accepté la mesure</h2>
+        <article class="entry"><strong>Aujourd’hui</strong><span>{{ visitors_today }}</span></article>
+        <article class="entry"><strong>Somme sur 7 jours</strong><span>{{ visitors_7_days }}</span></article>
+        <article class="entry"><strong>Somme sur 30 jours</strong><span>{{ visitors_30_days }}</span></article>
+        <p class="muted">Chaque navigateur est compté une fois par jour. Les périodes additionnent ces totaux quotidiens; un navigateur revenu plusieurs jours compte chaque jour. Mesure consentie, active depuis la mise en place du compteur.</p>
+    </section>
+
+    <section>
         <h2>Prestataires à vérifier ({{ providers|length }})</h2>
         {% for provider in providers %}
         <article class="entry">
