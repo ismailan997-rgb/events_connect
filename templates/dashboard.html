@@ -40,7 +40,9 @@
         .btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
         .primary{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#060a10;font-weight:800}
         .secondary{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:12px;border:1px solid var(--border);color:var(--t2);font-weight:600}
+        .edit-card{margin-top:28px}.edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.edit-field{display:flex;flex-direction:column;gap:6px}.edit-field.full{grid-column:1/-1}.edit-field label,.edit-label{color:var(--t2);font-size:.82rem;font-weight:700}.edit-field input,.edit-field textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:9px;background:rgba(255,255,255,.05);color:var(--t1);font:inherit}.edit-field textarea{min-height:100px;resize:vertical}.edit-hint{color:var(--t3);font-size:.78rem}.choice-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin:8px 0 20px}.choice{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--border);border-radius:8px;color:var(--t2);font-size:.85rem}.choice:has(input:checked){border-color:var(--gold);color:var(--gold-l);background:rgba(245,166,35,.08)}.portfolio-edit{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin:10px 0 18px}.portfolio-edit-item{border:1px solid var(--border);border-radius:9px;overflow:hidden}.portfolio-edit-item img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}.portfolio-edit-item label{display:flex;gap:6px;padding:8px;color:var(--t2);font-size:.78rem}.notice{padding:12px 14px;border-radius:9px;margin:10px 0;background:rgba(255,255,255,.05);color:var(--t2)}.notice.success{border:1px solid rgba(16,232,160,.3);color:var(--emerald)}.notice.error{border:1px solid rgba(239,68,68,.3);color:#fca5a5}.save-btn{border:0;border-radius:9px;padding:12px 18px;background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#060a10;font:inherit;font-weight:800;cursor:pointer}
         @media (max-width:760px){ .hero{grid-template-columns:1fr; text-align:center;} .avatar{margin:0 auto;} .grid{grid-template-columns:1fr;} }
+        @media (max-width:560px){.edit-grid{grid-template-columns:1fr}.edit-field.full{grid-column:auto}}
     </style>
 </head>
 <body>
@@ -52,6 +54,12 @@
 </nav>
 
 <main class="wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+    <div class="notice {{ category }}" role="status">{{ message }}</div>
+    {% endfor %}
+    {% endwith %}
+
     <section class="hero">
         <div class="avatar">
             {% if provider.image_url %}
@@ -75,6 +83,92 @@
                 {% endif %}
             </div>
         </div>
+    </section>
+
+    <section class="card edit-card">
+        <h2>Modifier mon profil</h2>
+        <p style="color:var(--t2);margin-top:-8px">Mettez à jour les informations visibles par les organisateurs.</p>
+        <form method="POST" action="/dashboard/{{ provider.dashboard_token }}/update" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="edit-grid">
+                <div class="edit-field">
+                    <label for="edit-name">Nom de l’entreprise / activité</label>
+                    <input id="edit-name" name="name" value="{{ provider.name }}" maxlength="100" required>
+                </div>
+                <div class="edit-field">
+                    <label for="edit-phone">Numéro WhatsApp</label>
+                    <input id="edit-phone" name="phone" type="tel" value="{{ provider.phone }}" pattern="[0-9+ ]{8,18}" maxlength="18" required>
+                </div>
+                <div class="edit-field">
+                    <label for="edit-city">Ville</label>
+                    <input id="edit-city" name="city" value="{{ provider.city }}" maxlength="60" required>
+                </div>
+                <div class="edit-field">
+                    <label for="edit-location">Quartier / Zone d’intervention</label>
+                    <input id="edit-location" name="location" value="{{ provider.location }}" maxlength="100" required>
+                </div>
+                <div class="edit-field">
+                    <label for="edit-price">Prix de départ (FCFA)</label>
+                    <input id="edit-price" name="price_from" type="number" min="0" max="100000000" value="{{ provider.price_from if provider.price_from else '' }}" placeholder="Laisser vide pour Sur devis">
+                    <span class="edit-hint">Le tarif est affiché automatiquement.</span>
+                </div>
+                <div class="edit-field">
+                    <label for="edit-specialties">Spécialités</label>
+                    <input id="edit-specialties" name="specialties" value="{{ provider.specialties }}" maxlength="200">
+                </div>
+                <div class="edit-field full">
+                    <label for="edit-description">Présentation</label>
+                    <textarea id="edit-description" name="description" maxlength="1000">{{ provider.description }}</textarea>
+                </div>
+            </div>
+
+            <div class="edit-label">Métiers (1 à 3)</div>
+            <div class="choice-grid">
+                {% for key, category in categories.items() %}
+                <label class="choice"><input type="checkbox" name="categories" value="{{ key }}" {% if key in provider.category_keys %}checked{% endif %}> {{ category.emoji }} {{ category.label }}</label>
+                {% endfor %}
+            </div>
+
+            <div class="edit-label">Événements couverts</div>
+            <div class="choice-grid">
+                {% for key, event in event_types.items() %}
+                <label class="choice"><input type="checkbox" name="event_types" value="{{ key }}" {% if key in provider.event_keys %}checked{% endif %}> {{ event.emoji }} {{ event.label }}</label>
+                {% endfor %}
+            </div>
+
+            <div class="edit-grid">
+                <div class="edit-field">
+                    <label for="edit-image">Changer la photo principale</label>
+                    <input id="edit-image" name="image" type="file" accept="image/jpeg,image/png,image/webp">
+                    <span class="edit-hint">JPG, PNG ou WebP, 5 Mo maximum.</span>
+                </div>
+                <div class="edit-field">
+                    <label for="edit-portfolio">Ajouter des réalisations</label>
+                    <input id="edit-portfolio" name="portfolio_images" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+                    <span class="edit-hint">5 photos maximum au total, 5 Mo chacune.</span>
+                </div>
+                <div class="edit-field full">
+                    <label for="edit-portfolio-title">Titre des nouvelles réalisations (facultatif)</label>
+                    <input id="edit-portfolio-title" name="portfolio_title" maxlength="100" placeholder="Ex: Mariage aux Almadies">
+                </div>
+            </div>
+
+            {% if provider.portfolio_list %}
+            <div class="edit-label" style="margin-top:18px">Réalisations actuelles · cochez celles à retirer</div>
+            <div class="portfolio-edit">
+                {% for item in provider.portfolio_list %}
+                <div class="portfolio-edit-item">
+                    <img src="{{ item.url }}" alt="{{ item.title }}">
+                    <label><input type="checkbox" name="remove_portfolio" value="{{ loop.index0 }}"> Retirer</label>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="notice">Modifier le nom, le numéro WhatsApp ou les métiers déclenche une nouvelle vérification et masque temporairement l’annonce.</div>
+            <button class="save-btn" type="submit">Enregistrer les modifications</button>
+        </form>
     </section>
 
     <div class="grid">

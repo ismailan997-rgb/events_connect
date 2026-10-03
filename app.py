@@ -10,7 +10,7 @@ from urllib.parse import urlsplit
 
 import cloudinary
 import cloudinary.uploader
-from flask import Flask, g, render_template, request, redirect, url_for, jsonify, session
+from flask import Flask, flash, g, render_template, request, redirect, url_for, jsonify, session
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_wtf.csrf import CSRFProtect
@@ -617,7 +617,138 @@ def dashboard(dashboard_token):
 
     provider = enrich(row)
     provider['public_url'] = url_for('detail', pid=provider['id'], _external=True)
-    return render_template('dashboard.html', provider=provider)
+    return render_template(
+        'dashboard.html', provider=provider,
+        categories=CATEGORIES, event_types=EVENT_TYPES
+    )
+
+
+@app.route('/dashboard/<dashboard_token>/update', methods=['POST'])
+@limiter.limit('10 per hour')
+def update_dashboard(dashboard_token):
+    db = get_db()
+    row = db.execute(
+        'SELECT * FROM providers WHERE dashboard_token = ? LIMIT 1', [dashboard_token]
+    ).fetchone()
+    if row is None:
+        db.close()
+        return render_template('404.html'), 404
+    if session.get('provider_id') != row['id']:
+        db.close()
+        return redirect(url_for('dashboard_access'))
+
+    current = dict(row)
+    name = request.form.get('name', '').strip()
+    categories = list(dict.fromkeys(request.form.getlist('categories')))
+    city = request.form.get('city', '').strip()
+    location = request.form.get('location', '').strip()
+    phone = request.form.get('phone', '').strip().replace(' ', '').replace('+', '')
+    price_from = request.form.get('price_from', '').strip()
+    specialties = request.form.get('specialties', '').strip()
+    description = request.form.get('description', '').strip()
+    event_types = list(dict.fromkeys(request.form.getlist('event_types')))
+    portfolio_title = request.form.get('portfolio_title', '').strip()
+    cover_file = request.files.get('image')
+    added_portfolio_files = [
+        file for file in request.files.getlist('portfolio_images')
+        if file and file.filename
+    ]
+
+    errors = []
+    if not all([name, city, location, phone]):
+        errors.append('Le nom, la ville, la zone et le téléphone sont obligatoires.')
+    if len(name) > 100 or len(city) > 60 or len(location) > 100:
+        errors.append('Vérifiez la longueur du nom, de la ville et de la zone.')
+    if not phone.isdigit() or not 8 <= len(phone) <= 15:
+        errors.append('Saisissez un numéro international valide, chiffres uniquement.')
+    if not categories or len(categories) > 3 or any(key not in CATEGORIES for key in categories):
+        errors.append('Choisissez entre 1 et 3 métiers valides.')
+    if not event_types or any(key not in EVENT_TYPES for key in event_types):
+        errors.append('Choisissez au moins un type d’événement valide.')
+    if len(specialties) > 200 or len(description) > 1000 or len(portfolio_title) > 100:
+        errors.append('Un des champs descriptifs dépasse la longueur autorisée.')
+
+    try:
+        price_int = int(price_from) if price_from else 0
+    except ValueError:
+        price_int = -1
+    if price_int < 0:
+        errors.append('Le tarif doit être un nombre positif ou laissé vide.')
+    elif price_int > 100_000_000:
+        errors.append('Le tarif saisi dépasse la limite autorisée.')
+
+    duplicate = db.execute(
+        'SELECT id FROM providers WHERE phone = ? AND id != ? LIMIT 1',
+        [phone, current['id']]
+    ).fetchone()
+    if duplicate:
+        errors.append('Ce numéro WhatsApp est déjà utilisé par un autre profil.')
+
+    try:
+        current_portfolio = json.loads(current.get('portfolio') or '[]')
+    except (TypeError, ValueError):
+        current_portfolio = []
+    try:
+        removed_indices = {int(value) for value in request.form.getlist('remove_portfolio')}
+    except ValueError:
+        removed_indices = set()
+    portfolio_items = [
+        item for index, item in enumerate(current_portfolio)
+        if index not in removed_indices
+    ]
+    if len(portfolio_items) + len(added_portfolio_files) > MAX_PORTFOLIO_IMAGES:
+        errors.append(f'Le portfolio peut contenir {MAX_PORTFOLIO_IMAGES} photos maximum.')
+
+    if errors:
+        db.close()
+        for message in errors:
+            flash(message, 'error')
+        return redirect(url_for('dashboard', dashboard_token=dashboard_token))
+
+    category_string = ','.join(categories)
+    verification_changed = (
+        name != current['name']
+        or phone != current['phone']
+        or category_string != (current.get('categories') or current['category'])
+    )
+    verified = 0 if verification_changed else current['verified']
+    image_url = current['image_url'] or ''
+    price_label = f'À partir de {price_int:,} FCFA'.replace(',', ' ') if price_int else 'Sur devis'
+
+    try:
+        if cover_file and cover_file.filename:
+            image_url = upload_file_to_cloudinary(cover_file, 'events-connect/providers')
+        for index, portfolio_file in enumerate(added_portfolio_files, start=1):
+            portfolio_url = upload_file_to_cloudinary(portfolio_file, 'events-connect/portfolio')
+            title = portfolio_title or 'Réalisation'
+            if len(added_portfolio_files) > 1:
+                title = f'{title} {index}'
+            portfolio_items.append({
+                'url': portfolio_url,
+                'title': title,
+                'event_type': 'Événement',
+                'caption': 'Prestation réalisée par nos soins',
+            })
+    except ValueError as exc:
+        db.close()
+        flash(str(exc), 'error')
+        return redirect(url_for('dashboard', dashboard_token=dashboard_token))
+
+    db.execute(
+        '''UPDATE providers SET name = ?, category = ?, categories = ?, city = ?, location = ?,
+           phone = ?, price_from = ?, price_label = ?, specialties = ?, image_url = ?,
+           description = ?, event_types = ?, portfolio = ?, verified = ? WHERE id = ?''',
+        [name, categories[0], category_string, city, location, phone, price_int, price_label,
+         specialties, image_url, description, ','.join(event_types), json.dumps(portfolio_items),
+         verified, current['id']]
+    )
+    db.commit()
+    db.close()
+
+    flash('Votre profil a été mis à jour.', 'success')
+    if verification_changed:
+        flash('Le changement de nom, téléphone ou métier remet votre profil en attente de vérification.', 'notice')
+    return redirect(url_for('dashboard', dashboard_token=dashboard_token))
 
 
 @app.route('/dashboard/<dashboard_token>/delete', methods=['POST'])

@@ -263,6 +263,85 @@ class EventsConnectTests(unittest.TestCase):
         self.assertEqual(provider['password'], '')
         self.assertTrue(check_password_hash(provider['password_hash'], 'ancien-mot-de-passe'))
 
+    def test_provider_can_edit_own_profile_and_manage_portfolio(self):
+        client = app_module.app.test_client()
+        dashboard_token = uuid.uuid4().hex
+        existing_portfolio = [
+            {'url': 'https://cdn.example.com/keep.jpg', 'title': 'À garder'},
+            {'url': 'https://cdn.example.com/remove.jpg', 'title': 'À retirer'},
+        ]
+        db = app_module.get_db()
+        db.execute(
+            '''INSERT INTO providers (name, category, categories, city, location, phone,
+               verified, event_types, portfolio, dashboard_token)
+               VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?, ?)''',
+            ['Studio Éditable', 'photographe', 'photographe', 'Dakar', 'Plateau',
+             '221771234567', 'mariage,bapteme', json.dumps(existing_portfolio), dashboard_token]
+        )
+        provider_id = db.execute(
+            'SELECT id FROM providers WHERE dashboard_token = ?', [dashboard_token]
+        ).fetchone()['id']
+        db.commit()
+        db.close()
+
+        with client.session_transaction() as provider_session:
+            provider_session['provider_id'] = provider_id
+
+        self.assertEqual(client.get(f'/dashboard/{dashboard_token}').status_code, 200)
+
+        with patch.dict(os.environ, {
+            'CLOUDINARY_CLOUD_NAME': 'test-cloud',
+            'CLOUDINARY_API_KEY': 'test-key',
+            'CLOUDINARY_API_SECRET': 'test-secret',
+        }), patch('cloudinary.uploader.upload') as upload_mock:
+            upload_mock.return_value = {'secure_url': 'https://cdn.example.com/new.jpg'}
+            response = client.post(f'/dashboard/{dashboard_token}/update', data={
+                'name': 'Studio Éditable',
+                'categories': ['photographe'],
+                'city': 'Thiès',
+                'location': 'Centre-ville',
+                'phone': '221771234567',
+                'price_from': '',
+                'specialties': 'Mariages',
+                'description': 'Nouvelle présentation',
+                'event_types': ['mariage', 'soiree'],
+                'remove_portfolio': ['1'],
+                'portfolio_images': [(io.BytesIO(b'new-image'), 'nouvelle.jpg')],
+            }, content_type='multipart/form-data')
+        self.assertEqual(response.status_code, 302)
+
+        db = app_module.get_db()
+        updated = db.execute('SELECT * FROM providers WHERE id = ?', [provider_id]).fetchone()
+        db.close()
+        self.assertEqual(updated['city'], 'Thiès')
+        self.assertEqual(updated['price_label'], 'Sur devis')
+        self.assertEqual(updated['verified'], 1)
+        updated_portfolio = json.loads(updated['portfolio'])
+        self.assertEqual([item['title'] for item in updated_portfolio], ['À garder', 'Réalisation'])
+        self.assertEqual(updated_portfolio[1]['url'], 'https://cdn.example.com/new.jpg')
+
+        unauthorized = app_module.app.test_client().post(
+            f'/dashboard/{dashboard_token}/update', data={'city': 'Saint-Louis'}
+        )
+        self.assertEqual(unauthorized.status_code, 302)
+        self.assertIn('/dashboard-access', unauthorized.headers['Location'])
+
+        changed_name = client.post(f'/dashboard/{dashboard_token}/update', data={
+            'name': 'Nouveau nom',
+            'categories': ['photographe'],
+            'city': 'Thiès',
+            'location': 'Centre-ville',
+            'phone': '221771234567',
+            'event_types': ['mariage'],
+        })
+        self.assertEqual(changed_name.status_code, 302)
+        db = app_module.get_db()
+        verification = db.execute(
+            'SELECT verified FROM providers WHERE id = ?', [provider_id]
+        ).fetchone()['verified']
+        db.close()
+        self.assertEqual(verification, 0)
+
     def test_reviews_wait_for_admin_and_provider_badge_is_moderated(self):
         client = app_module.app.test_client()
         app_module.ADMIN_PASSWORD_HASH = generate_password_hash('admin-passphrase-local')
