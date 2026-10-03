@@ -138,6 +138,41 @@ class EventsConnectTests(unittest.TestCase):
         self.assertEqual(provider['price_from'], 0)
         self.assertEqual(provider['price_label'], 'Sur devis')
 
+    def test_homepage_orders_equal_ratings_oldest_provider_first(self):
+        db = app_module.get_db()
+        providers = [
+            ('Ancien sans avis', '2024-01-01 10:00:00'),
+            ('Nouveau sans avis', '2025-01-01 10:00:00'),
+            ('Très bien noté', '2025-06-01 10:00:00'),
+        ]
+        provider_ids = {}
+        for name, created_at in providers:
+            token = uuid.uuid4().hex
+            db.execute(
+                '''INSERT INTO providers (name, category, categories, city, location, phone,
+                   verified, created_at, dashboard_token)
+                   VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?)''',
+                [name, 'photographe', 'photographe', 'Dakar', 'Plateau',
+                 f'22177{len(provider_ids):06d}', created_at, token]
+            )
+            provider_ids[name] = db.execute(
+                'SELECT id FROM providers WHERE dashboard_token = ?', [token]
+            ).fetchone()['id']
+
+        db.execute(
+            "INSERT INTO reviews (provider_id, author, rating, status) VALUES (?, ?, ?, 'approved')",
+            [provider_ids['Très bien noté'], 'Client', 5]
+        )
+        db.commit()
+        db.close()
+
+        page = app_module.app.test_client().get('/').get_data(as_text=True)
+        rated_position = page.index('Très bien noté')
+        oldest_position = page.index('Ancien sans avis')
+        newest_position = page.index('Nouveau sans avis')
+        self.assertLess(rated_position, oldest_position)
+        self.assertLess(oldest_position, newest_position)
+
     def test_registration_rejects_more_than_five_portfolio_images(self):
         client = app_module.app.test_client()
         files = [

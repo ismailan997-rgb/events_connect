@@ -508,7 +508,7 @@ def home():
         except ValueError:
             pass
 
-    sql += ' GROUP BY p.id ORDER BY avg_rating DESC, p.created_at DESC'
+    sql += ' GROUP BY p.id ORDER BY avg_rating DESC, p.created_at ASC, p.id ASC'
 
     db = get_db()
     rows = db.execute(sql, params).fetchall()
