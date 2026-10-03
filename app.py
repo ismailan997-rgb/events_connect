@@ -178,6 +178,8 @@ def init_db():
                     password TEXT NOT NULL DEFAULT '',
                     password_hash TEXT NOT NULL DEFAULT '',
                     image_url TEXT NOT NULL DEFAULT '',
+                    cover_position_x INTEGER NOT NULL DEFAULT 50,
+                    cover_position_y INTEGER NOT NULL DEFAULT 50,
                     description TEXT NOT NULL DEFAULT '',
                     verified INTEGER NOT NULL DEFAULT 0,
                     event_types TEXT NOT NULL DEFAULT 'mariage,bapteme,anniversaire,soiree',
@@ -213,6 +215,8 @@ def init_db():
                     password    TEXT NOT NULL DEFAULT '',
                     password_hash TEXT NOT NULL DEFAULT '',
                     image_url   TEXT NOT NULL DEFAULT '',
+                    cover_position_x INTEGER NOT NULL DEFAULT 50,
+                    cover_position_y INTEGER NOT NULL DEFAULT 50,
                     description TEXT NOT NULL DEFAULT '',
                     verified    INTEGER NOT NULL DEFAULT 0,
                     event_types TEXT NOT NULL DEFAULT 'mariage,bapteme,anniversaire,soiree',
@@ -259,6 +263,10 @@ def init_db():
             conn.execute("ALTER TABLE providers ADD COLUMN password_hash TEXT NOT NULL DEFAULT ''")
         if 'categories' not in cols:
             conn.execute("ALTER TABLE providers ADD COLUMN categories TEXT NOT NULL DEFAULT ''")
+        if 'cover_position_x' not in cols:
+            conn.execute('ALTER TABLE providers ADD COLUMN cover_position_x INTEGER NOT NULL DEFAULT 50')
+        if 'cover_position_y' not in cols:
+            conn.execute('ALTER TABLE providers ADD COLUMN cover_position_y INTEGER NOT NULL DEFAULT 50')
 
         if DATABASE_URL:
             review_cols = [row['column_name'] for row in conn.execute(
@@ -302,6 +310,11 @@ def enrich(row):
     p['category_keys'] = category_keys
     p['category_display'] = ', '.join(cat['label'] for cat in categories) or 'Métier non précisé'
     p['category_emoji'] = categories[0]['emoji'] if categories else '🎭'
+    for position in ('cover_position_x', 'cover_position_y'):
+        try:
+            p[position] = max(0, min(100, int(p.get(position, 50))))
+        except (TypeError, ValueError):
+            p[position] = 50
     p['stars_full']  = int(round(p.get('avg_rating', 0)))
     p['avg_rating']  = round(p.get('avg_rating', 0), 1)
     p['dashboard_url'] = ''
@@ -648,6 +661,11 @@ def update_dashboard(dashboard_token):
     description = request.form.get('description', '').strip()
     event_types = list(dict.fromkeys(request.form.getlist('event_types')))
     portfolio_title = request.form.get('portfolio_title', '').strip()
+    try:
+        cover_position_x = int(request.form.get('cover_position_x', current.get('cover_position_x', 50)))
+        cover_position_y = int(request.form.get('cover_position_y', current.get('cover_position_y', 50)))
+    except (TypeError, ValueError):
+        cover_position_x, cover_position_y = -1, -1
     cover_file = request.files.get('image')
     added_portfolio_files = [
         file for file in request.files.getlist('portfolio_images')
@@ -667,6 +685,8 @@ def update_dashboard(dashboard_token):
         errors.append('Choisissez au moins un type d’événement valide.')
     if len(specialties) > 200 or len(description) > 1000 or len(portfolio_title) > 100:
         errors.append('Un des champs descriptifs dépasse la longueur autorisée.')
+    if not 0 <= cover_position_x <= 100 or not 0 <= cover_position_y <= 100:
+        errors.append('Le cadrage de la photo doit être compris entre 0 et 100.')
 
     try:
         price_int = int(price_from) if price_from else 0
@@ -737,10 +757,11 @@ def update_dashboard(dashboard_token):
     db.execute(
         '''UPDATE providers SET name = ?, category = ?, categories = ?, city = ?, location = ?,
            phone = ?, price_from = ?, price_label = ?, specialties = ?, image_url = ?,
-           description = ?, event_types = ?, portfolio = ?, verified = ? WHERE id = ?''',
+              cover_position_x = ?, cover_position_y = ?, description = ?, event_types = ?,
+              portfolio = ?, verified = ? WHERE id = ?''',
         [name, categories[0], category_string, city, location, phone, price_int, price_label,
-         specialties, image_url, description, ','.join(event_types), json.dumps(portfolio_items),
-         verified, current['id']]
+            specialties, image_url, cover_position_x, cover_position_y, description,
+            ','.join(event_types), json.dumps(portfolio_items), verified, current['id']]
     )
     db.commit()
     db.close()

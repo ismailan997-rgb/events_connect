@@ -40,7 +40,7 @@
         .btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
         .primary{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#060a10;font-weight:800}
         .secondary{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:12px;border:1px solid var(--border);color:var(--t2);font-weight:600}
-        .edit-card{margin-top:28px}.edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.edit-field{display:flex;flex-direction:column;gap:6px}.edit-field.full{grid-column:1/-1}.edit-field label,.edit-label{color:var(--t2);font-size:.82rem;font-weight:700}.edit-field input,.edit-field textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:9px;background:rgba(255,255,255,.05);color:var(--t1);font:inherit}.edit-field textarea{min-height:100px;resize:vertical}.edit-hint{color:var(--t3);font-size:.78rem}.choice-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin:8px 0 20px}.choice{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--border);border-radius:8px;color:var(--t2);font-size:.85rem}.choice:has(input:checked){border-color:var(--gold);color:var(--gold-l);background:rgba(245,166,35,.08)}.portfolio-edit{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin:10px 0 18px}.portfolio-edit-item{border:1px solid var(--border);border-radius:9px;overflow:hidden}.portfolio-edit-item img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}.portfolio-edit-item label{display:flex;gap:6px;padding:8px;color:var(--t2);font-size:.78rem}.notice{padding:12px 14px;border-radius:9px;margin:10px 0;background:rgba(255,255,255,.05);color:var(--t2)}.notice.success{border:1px solid rgba(16,232,160,.3);color:var(--emerald)}.notice.error{border:1px solid rgba(239,68,68,.3);color:#fca5a5}.save-btn{border:0;border-radius:9px;padding:12px 18px;background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#060a10;font:inherit;font-weight:800;cursor:pointer}
+        .edit-card{margin-top:28px}.edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.edit-field{display:flex;flex-direction:column;gap:6px}.edit-field.full{grid-column:1/-1}.edit-field label,.edit-label{color:var(--t2);font-size:.82rem;font-weight:700}.edit-field input,.edit-field textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:9px;background:rgba(255,255,255,.05);color:var(--t1);font:inherit}.edit-field input[type=range]{padding:0;accent-color:var(--gold)}.edit-field textarea{min-height:100px;resize:vertical}.edit-hint{color:var(--t3);font-size:.78rem}.cover-editor{width:min(100%,480px);aspect-ratio:16/9;overflow:hidden;border:1px solid var(--border-g);border-radius:10px;background:#0d1420}.cover-editor img{width:100%;height:100%;object-fit:cover}.cover-editor-placeholder{width:100%;height:100%;display:grid;place-items:center;color:var(--t2)}.cover-control-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:480px}.choice-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin:8px 0 20px}.choice{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--border);border-radius:8px;color:var(--t2);font-size:.85rem}.choice:has(input:checked){border-color:var(--gold);color:var(--gold-l);background:rgba(245,166,35,.08)}.portfolio-edit{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin:10px 0 18px}.portfolio-edit-item{border:1px solid var(--border);border-radius:9px;overflow:hidden}.portfolio-edit-item img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}.portfolio-edit-item label{display:flex;gap:6px;padding:8px;color:var(--t2);font-size:.78rem}.notice{padding:12px 14px;border-radius:9px;margin:10px 0;background:rgba(255,255,255,.05);color:var(--t2)}.notice.success{border:1px solid rgba(16,232,160,.3);color:var(--emerald)}.notice.error{border:1px solid rgba(239,68,68,.3);color:#fca5a5}.save-btn{border:0;border-radius:9px;padding:12px 18px;background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#060a10;font:inherit;font-weight:800;cursor:pointer}
         @media (max-width:760px){ .hero{grid-template-columns:1fr; text-align:center;} .avatar{margin:0 auto;} .grid{grid-template-columns:1fr;} }
         @media (max-width:560px){.edit-grid{grid-template-columns:1fr}.edit-field.full{grid-column:auto}}
     </style>
@@ -63,7 +63,7 @@
     <section class="hero">
         <div class="avatar">
             {% if provider.image_url %}
-            <img src="{{ provider.image_url }}" alt="{{ provider.name }}">
+            <img src="{{ provider.image_url }}" alt="{{ provider.name }}" style="object-position:{{ provider.cover_position_x }}% {{ provider.cover_position_y }}%">
             {% else %}
             <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:3.5rem;">{{ provider.category_emoji }}</div>
             {% endif %}
@@ -139,9 +139,31 @@
 
             <div class="edit-grid">
                 <div class="edit-field">
-                    <label for="edit-image">Changer la photo principale</label>
+                    <label for="edit-image">Photo principale affichée partout</label>
                     <input id="edit-image" name="image" type="file" accept="image/jpeg,image/png,image/webp">
                     <span class="edit-hint">JPG, PNG ou WebP, 5 Mo maximum.</span>
+                </div>
+                <div class="edit-field full">
+                    <label>Aperçu du cadrage de la photo principale</label>
+                    <div class="cover-editor">
+                        {% if provider.image_url %}
+                        <img id="cover-preview" src="{{ provider.image_url }}" alt="Aperçu du cadrage" style="object-position:{{ provider.cover_position_x }}% {{ provider.cover_position_y }}%">
+                        {% else %}
+                        <div class="cover-editor-placeholder" id="cover-preview-placeholder">Ajoutez une photo principale pour régler son cadrage.</div>
+                        <img id="cover-preview" src="" alt="Aperçu du cadrage" style="display:none;object-position:{{ provider.cover_position_x }}% {{ provider.cover_position_y }}%">
+                        {% endif %}
+                    </div>
+                    <div class="cover-control-grid">
+                        <div class="edit-field">
+                            <label for="cover-position-x">Horizontal</label>
+                            <input id="cover-position-x" name="cover_position_x" type="range" min="0" max="100" value="{{ provider.cover_position_x }}">
+                        </div>
+                        <div class="edit-field">
+                            <label for="cover-position-y">Vertical</label>
+                            <input id="cover-position-y" name="cover_position_y" type="range" min="0" max="100" value="{{ provider.cover_position_y }}">
+                        </div>
+                    </div>
+                    <span class="edit-hint">Déplacez les curseurs pour choisir la partie visible; ce cadrage sera repris partout où la photo principale apparaît.</span>
                 </div>
                 <div class="edit-field">
                     <label for="edit-portfolio">Ajouter des réalisations</label>
@@ -195,5 +217,30 @@
         </section>
     </div>
 </main>
+<script>
+const coverPreview = document.getElementById('cover-preview');
+const coverPositionX = document.getElementById('cover-position-x');
+const coverPositionY = document.getElementById('cover-position-y');
+
+function updateCoverPreview() {
+    coverPreview.style.objectPosition = `${coverPositionX.value}% ${coverPositionY.value}%`;
+}
+
+coverPositionX.addEventListener('input', updateCoverPreview);
+coverPositionY.addEventListener('input', updateCoverPreview);
+
+document.getElementById('edit-image').addEventListener('change', event => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+        coverPreview.src = reader.result;
+        coverPreview.style.display = 'block';
+        document.getElementById('cover-preview-placeholder')?.remove();
+        updateCoverPreview();
+    };
+    reader.readAsDataURL(file);
+});
+</script>
 </body>
 </html>

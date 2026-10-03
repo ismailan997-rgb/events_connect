@@ -272,11 +272,12 @@ class EventsConnectTests(unittest.TestCase):
         ]
         db = app_module.get_db()
         db.execute(
-            '''INSERT INTO providers (name, category, categories, city, location, phone,
-               verified, event_types, portfolio, dashboard_token)
-               VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?, ?)''',
+                '''INSERT INTO providers (name, category, categories, city, location, phone,
+                    image_url, verified, event_types, portfolio, dashboard_token)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)''',
             ['Studio Éditable', 'photographe', 'photographe', 'Dakar', 'Plateau',
-             '221771234567', 'mariage,bapteme', json.dumps(existing_portfolio), dashboard_token]
+                 '221771234567', 'https://cdn.example.com/cover.jpg', 'mariage,bapteme',
+                 json.dumps(existing_portfolio), dashboard_token]
         )
         provider_id = db.execute(
             'SELECT id FROM providers WHERE dashboard_token = ?', [dashboard_token]
@@ -302,6 +303,8 @@ class EventsConnectTests(unittest.TestCase):
                 'location': 'Centre-ville',
                 'phone': '221771234567',
                 'price_from': '',
+                'cover_position_x': '23',
+                'cover_position_y': '72',
                 'specialties': 'Mariages',
                 'description': 'Nouvelle présentation',
                 'event_types': ['mariage', 'soiree'],
@@ -315,10 +318,19 @@ class EventsConnectTests(unittest.TestCase):
         db.close()
         self.assertEqual(updated['city'], 'Thiès')
         self.assertEqual(updated['price_label'], 'Sur devis')
+        self.assertEqual(updated['cover_position_x'], 23)
+        self.assertEqual(updated['cover_position_y'], 72)
         self.assertEqual(updated['verified'], 1)
+        dashboard_page = client.get(f'/dashboard/{dashboard_token}').get_data(as_text=True)
+        self.assertIn('object-position:23% 72%', dashboard_page)
         updated_portfolio = json.loads(updated['portfolio'])
         self.assertEqual([item['title'] for item in updated_portfolio], ['À garder', 'Réalisation'])
         self.assertEqual(updated_portfolio[1]['url'], 'https://cdn.example.com/new.jpg')
+
+        annuaire_page = client.get('/').get_data(as_text=True)
+        self.assertIn('object-position:23% 72%', annuaire_page)
+        detail_page = client.get(f'/prestataire/{provider_id}').get_data(as_text=True)
+        self.assertIn('object-position:23% 72%', detail_page)
 
         unauthorized = app_module.app.test_client().post(
             f'/dashboard/{dashboard_token}/update', data={'city': 'Saint-Louis'}

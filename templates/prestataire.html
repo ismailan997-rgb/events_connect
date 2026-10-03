@@ -214,7 +214,7 @@
         <!-- Image -->
         <div class="img-block">
             {% if provider.image_url %}
-                <img src="{{ provider.image_url }}" alt="{{ provider.name }}">
+                <img src="{{ provider.image_url }}" alt="{{ provider.name }}" style="object-position:{{ provider.cover_position_x }}% {{ provider.cover_position_y }}%">
             {% else %}
                 <div class="img-placeholder">{{ provider.category_emoji }}</div>
             {% endif %}
@@ -421,7 +421,7 @@
         
         <div class="modal-header">
             <div class="modal-avatar">
-                <img src="{{ provider.image_url }}" alt="{{ provider.name }}">
+                <img src="{{ provider.image_url }}" alt="{{ provider.name }}" style="object-position:{{ provider.cover_position_x }}% {{ provider.cover_position_y }}%">
             </div>
             <div>
                 <div class="modal-title">{{ provider.name }}</div>

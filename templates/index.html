@@ -275,7 +275,7 @@
                 <a href="/prestataire/{{ p.id }}" style="text-decoration:none;color:inherit;">
                     <div class="card-img">
                         {% if p.image_url %}
-                            <img src="{{ p.image_url }}" alt="{{ p.name }}" loading="lazy">
+                            <img src="{{ p.image_url }}" alt="{{ p.name }}" loading="lazy" style="object-position:{{ p.cover_position_x }}% {{ p.cover_position_y }}%">
                         {% else %}
                             <div class="card-placeholder">{{ p.category_emoji }}</div>
                         {% endif %}
@@ -325,8 +325,8 @@
 
                     <div class="card-actions">
                         <a href="/prestataire/{{ p.id }}" class="btn-profile">Voir réalisations</a>
-                        <button type="button" class="btn-wa-card" data-provider-name="{{ p.name }}" data-provider-phone="{{ p.phone }}" data-provider-category="{{ p.category_display }}" data-provider-image="{{ p.image_url }}"
-                            onclick="openWhatsAppModal(this.dataset.providerName, this.dataset.providerPhone, this.dataset.providerCategory, this.dataset.providerImage)">
+                        <button type="button" class="btn-wa-card" data-provider-name="{{ p.name }}" data-provider-phone="{{ p.phone }}" data-provider-category="{{ p.category_display }}" data-provider-image="{{ p.image_url }}" data-cover-position-x="{{ p.cover_position_x }}" data-cover-position-y="{{ p.cover_position_y }}"
+                            onclick="openWhatsAppModal(this.dataset.providerName, this.dataset.providerPhone, this.dataset.providerCategory, this.dataset.providerImage, this.dataset.coverPositionX, this.dataset.coverPositionY)">
                             💬 Devis WhatsApp
                         </button>
                     </div>
@@ -470,7 +470,7 @@
         }
     }
 
-    function openWhatsAppModal(name, phone, category, imageUrl) {
+    function openWhatsAppModal(name, phone, category, imageUrl, positionX = 50, positionY = 50) {
         document.getElementById('mProviderName').textContent = name;
         document.getElementById('mProviderCat').textContent = category;
         document.getElementById('mPhone').value = phone;
@@ -479,6 +479,7 @@
         if (imageUrl) {
             avatarImg.src = imageUrl;
             avatarImg.style.display = 'block';
+            avatarImg.style.objectPosition = `${positionX}% ${positionY}%`;
         } else {
             avatarImg.style.display = 'none';
         }
