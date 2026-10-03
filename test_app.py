@@ -116,6 +116,28 @@ class EventsConnectTests(unittest.TestCase):
         db.close()
         self.assertIsNone(provider)
 
+    def test_registration_without_starting_price_shows_quote_on_request(self):
+        client = app_module.app.test_client()
+        response = client.post('/inscription', data={
+            'name': 'Studio Sur Devis',
+            'category': 'photographe',
+            'city': 'Dakar',
+            'location': 'Plateau',
+            'phone': '221771222398',
+            'password': 'motdepasse-long',
+            'consent': 'yes',
+            'event_types': ['mariage'],
+            'price_from': '',
+        })
+        self.assertEqual(response.status_code, 302)
+        db = app_module.get_db()
+        provider = db.execute(
+            'SELECT price_from, price_label FROM providers WHERE phone = ?', ['221771222398']
+        ).fetchone()
+        db.close()
+        self.assertEqual(provider['price_from'], 0)
+        self.assertEqual(provider['price_label'], 'Sur devis')
+
     def test_registration_rejects_more_than_five_portfolio_images(self):
         client = app_module.app.test_client()
         files = [

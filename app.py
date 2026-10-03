@@ -874,7 +874,7 @@ def inscription():
 
         if not error:
             try:
-                price_int = int(price_from)
+                price_int = int(price_from) if price_from else 0
             except ValueError:
                 return render_template(
                     'inscription.html', categories=CATEGORIES, event_types=EVENT_TYPES,
