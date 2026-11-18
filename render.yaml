@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: events-connect
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --workers 1 app:app
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: APP_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SUPPORT_EMAIL
+        value: contact@eventsconnect.site
+      - key: SUPPORT_WHATSAPP
+        value: 768013018
+      - key: LEGAL_OPERATOR_NAME
+        value: Papa Ismaila Ndiaye
+      - key: LEGAL_OPERATOR_ADDRESS
+        value: Quartier Apecsy 2, Dakar, Sénégal
+      - key: HOSTING_PROVIDER
+        value: Render
+      - key: RATELIMIT_STORAGE_URI
+        sync: false
